@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防水工事材料数量計算ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>防水工事材料数量計算ツール</h1>
+    </header>
+    <main>
+        <label for="area">面積 (平方メートル): </label>
+        <input type="number" id="area" name="area" min="0"><br>
+        <label for="method">工法: </label>
+        <select id="method" name="method">
+            <option value="sd-kk20t">サラセーヌSD-KK20T工法</option>
+            <!-- 他の工法を追加する場合はここに追加 -->
+        </select><br>
+        <button onclick="calculate()">計算</button>
+        <p id="result"></p>
+    </main>
+    <footer>
+        <p>© 2025 防水工事計算ツール</p>
+    </footer>
+
+    <script>
+        function calculate() {
+            var area = parseFloat(document.getElementById('area').value);
+            var method = document.getElementById('method').value;
+            var resultText = '';
+
+            if (isNaN(area) || area <= 0) {
+                document.getElementById('result').innerText = '有効な面積を入力してください。';
+                return;
+            }
+
+            if (method === 'sd-kk20t') {
+                // 材料の単位容量
+                var primerCapacity = 16; // サラセーヌP 1缶の容量 (kg)
+                var membraneCapacity = 24; // サラセーヌK 1セットの容量 (kg)
+                var topcoatCapacity = 15; // サラセーヌT 1セットの容量 (kg)
+
+                // 必要量の計算（平米あたり）
+                var primer = area * 0.2; // サラセーヌP必要量 (kg)
+                var membrane = area * 2.6; // サラセーヌK必要量 (kg)
+                var topcoat = area * 0.2; // サラセーヌT必要量 (kg)
+
+                // 必要な缶数（切り上げ）
+                var primerCans = Math.ceil(primer / primerCapacity);
+                var membraneSets = Math.ceil(membrane / membraneCapacity);
+                var topcoatSets = Math.ceil(topcoat / topcoatCapacity);
+
+                resultText = `必要な材料:\n` +
+                             `サラセーヌP (プライマー): ${primerCans} 缶 (${primer.toFixed(2)} kg)\n` +
+                             `サラセーヌK (膜材): ${membraneSets} セット (${membrane.toFixed(2)} kg)\n` +
+                             `サラセーヌT (トップコート): ${topcoatSets} セット (${topcoat.toFixed(2)} kg)`;
+            } else {
+                resultText = '対応する工法が選択されていません。';
+            }
+
+            document.getElementById('result').innerText = resultText;
+        }
+    </script>
+</body>
+</html>
