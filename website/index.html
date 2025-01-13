@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>材料計算ツール</title>
+    <link rel="stylesheet" href="styles.css"> <!-- 外部CSSファイルをリンク -->
+</head>
+<body>
+
+<h1>材料計算ツール</h1>
+
+<div>
+    <label for="manufacturer">メーカー:</label>
+    <select id="manufacturer">
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+<div>
+    <label for="method">工法:</label>
+    <select id="method">
+        <option value="">選択してください</option>
+    </select>
+</div>
+
+<div>
+    <label for="area">面積 (平方メートル):</label>
+    <input type="number" id="area" placeholder="面積を入力" />
+</div>
+
+<div>
+    <button id="calculateBtn">計算する</button>
+</div>
+
+<div id="result">
+    <!-- 計算結果がここに表示されます -->
+</div>
+
+<script>
+    // methods データを直接埋め込む
+    const methods = {
+        "sd-kk20t": {
+            "name": "サラセーヌSD-KK20T",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 }
+            }
+        },
+        "sd-kk30t": {
+            "name": "サラセーヌSD-KK30T",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "サラセーヌクロス＃2000": { 
+                    "isAreaBased": true, 
+                    "capacitySqM": 100, 
+                    "usageFactor": 1
+                }
+            }
+        },
+        "qv-kk50t": { 
+            "name": "サラセーヌQV-KK50T",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "QVシート": { 
+                    "isAreaBased": true, 
+                    "capacitySqM": 15, 
+                    "usageFactor": 1.06
+                },
+                "ジョイントテープ": { 
+                    "isTapeBased": true,
+                    "rollLength": 50, 
+                    "calculateTapeOption1": true, // 平米 ÷ 10 − 1
+                },
+                "MBテープ": { 
+                    "isTapeBased": true,
+                    "rollLength": 20, 
+                    "calculateTapeOption2": true  // 外周計算
+                }
+            }
+        }
+    };
+
+    // 初期化処理
+    window.addEventListener('DOMContentLoaded', () => {
+        const manufacturerSelect = document.getElementById('manufacturer');
+        const methodSelect = document.getElementById('method');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const result = document.getElementById('result');
+        const areaInput = document.getElementById('area');
+
+        // メーカー一覧を生成
+        const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+        manufacturers.forEach(manufacturer => {
+            const option = document.createElement('option');
+            option.value = manufacturer;
+            option.textContent = manufacturer;
+            manufacturerSelect.appendChild(option);
+        });
+
+        // メーカー選択時に対応する工法を表示
+        manufacturerSelect.addEventListener('change', () => {
+            const selectedManufacturer = manufacturerSelect.value;
+            methodSelect.innerHTML = '<option value="">選択してください</option>'; // 初期化
+
+            if (selectedManufacturer) {
+                Object.entries(methods).forEach(([key, method]) => {
+                    if (method.manufacturer === selectedManufacturer) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = method.name;
+                        methodSelect.appendChild(option);
+                    }
+                });
+            }
+        });
+
+        // 計算処理
+        const calculate = () => {
+            const area = parseFloat(areaInput.value);
+            const selectedMethodKey = methodSelect.value;
+            const methodData = methods[selectedMethodKey];
+
+            if (!area || area <= 0 || !methodData) {
+                result.textContent = '正しい入力値を選択してください。';
+                return;
+            }
+
+            // 結果の初期化
+            result.innerHTML = '';
+
+            // 結果を表形式で生成
+            const table = document.createElement('table');
+            table.border = '1';
+            table.style.borderCollapse = 'collapse';
+            table.style.width = '100%';
+
+            // テーブルヘッダーを作成
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th>材料名</th>
+                <th>必要な量</th>
+                <th>必要な数 (整数)</th>
+                <th>必要な数 (小数点第2位まで)</th>
+            `;
+            table.appendChild(headerRow);
+
+            // 各材料ごとの計算
+            Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
+                let requiredAmount = 0;
+                let requiredCans = 0;
+                let requiredCansDecimal = 0;
+
+                if (materialData.isAreaBased) {
+                    // クロス用の計算
+                    const usageFactor = materialData.usageFactor || 1;
+                    requiredAmount = area * usageFactor;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
+                    requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
+                } else if (materialData.isTapeBased) {
+                    // テープ用の計算
+                    if (materialData.calculateTapeOption1) {
+                        // 平米 ÷ 10 − 1 の計算
+                        requiredAmount = Math.max(0, area / 10 - 1);
+                        requiredCans = Math.ceil(requiredAmount / materialData.rollLength);
+                        requiredCansDecimal = (requiredAmount / materialData.rollLength).toFixed(2);
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${materialName} (※概算)</td>
+                            <td>${requiredAmount.toFixed(3)} メートル</td>
+                            <td>${requiredCans}</td>
+                            <td>${requiredCansDecimal}</td>
+                        `;
+                        table.appendChild(row);
+                    }
+                    if (materialData.calculateTapeOption2) {
+                        // 外周の計算
+                        const sideLength = Math.sqrt(area); // 正方形の一辺
+                        requiredAmount = sideLength * 4; // 外周
+                        requiredCans = Math.ceil(requiredAmount / materialData.rollLength);
+                        requiredCansDecimal = (requiredAmount / materialData.rollLength).toFixed(2);
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${materialName} (外周※概算)</td>
+                            <td>${requiredAmount.toFixed(3)} メートル</td>
+                            <td>${requiredCans}</td>
+                            <td>${requiredCansDecimal}</td>
+                        `;
+                        table.appendChild(row);
+                    }
+                } else {
+                    // 通常の重量ベースの計算
+                    const usageFactor = materialData.usageFactor || 1;
+                    requiredAmount = area * materialData.usagePerSqM * usageFactor;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                }
+
+                if (!materialData.isTapeBased) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${materialName}</td>
+                        <td>${requiredAmount.toFixed(3)} ${materialData.isTapeBased ? 'メートル' : 'kg'}</td>
+                        <td>${requiredCans}</td>
+                        <td>${requiredCansDecimal}</td>
+                    `;
+                    table.appendChild(row);
+                }
+            });
+
+            // 結果を挿入
+            result.appendChild(table);
+        };
+
+        // 計算ボタンのクリックイベント
+        calculateBtn.addEventListener('click', calculate);
+
+        // エンターキーで計算を実行
+        areaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
