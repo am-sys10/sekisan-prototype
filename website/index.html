@@ -183,46 +183,59 @@
         });
 
         calculateBtn.addEventListener('click', () => {
-            const area = parseFloat(areaInput.value);
-            const selectedMethodKey = methodSelect.value;
-            const methodData = methods[selectedMethodKey];
+    const area = parseFloat(areaInput.value);
+    const selectedMethodKey = methodSelect.value;
+    const methodData = methods[selectedMethodKey];
 
-            if (!area || area <= 0 || !methodData) {
-                result.textContent = '正しい入力値を選択してください。';
-                return;
-            }
+    if (!area || area <= 0 || !methodData) {
+        result.textContent = '正しい入力値を選択してください。';
+        return;
+    }
 
-            result.innerHTML = '';
-            const table = document.createElement('table');
+    result.innerHTML = '';
+    const table = document.createElement('table');
 
-            // テーブルヘッダー
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = `
-                <th>材料名</th>
-                <th>必要量 (kg)</th>
-                <th>整数 (缶数)</th>
-                <th>実数 (缶数)</th>
-            `;
-            table.appendChild(headerRow);
+    // テーブルヘッダー
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th>材料名</th>
+        <th>必要量 (kg または 平米)</th>
+        <th>整数 (缶数)</th>
+        <th>実数 (缶数)</th>
+    `;
+    table.appendChild(headerRow);
 
-            // 材料データ計算
-            Object.entries(methodData.materials).forEach(([materialName, material]) => {
-                const usage = material.isAreaBased
-                    ? area / material.capacitySqM
-                    : area * material.usagePerSqM / material.capacity;
+    // 材料データ計算
+    Object.entries(methodData.materials).forEach(([materialName, material]) => {
+        let requiredAmount; // 必要な量（kg または 平米）
+        let requiredCans; // 必要な缶数（実数）
+        let requiredCansCeil; // 必要な缶数（整数）
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${materialName}</td>
-                    <td>${Math.ceil(area * material.usagePerSqM)} kg</td>
-                    <td>${Math.ceil(usage)} 缶</td>
-                    <td>${usage.toFixed(2)} 缶</td>
-                `;
-                table.appendChild(row);
-            });
+        if (material.isAreaBased) {
+            // クロスの場合
+            requiredAmount = area; // 必要な面積
+            requiredCans = area / material.capacitySqM;
+        } else {
+            // 通常の材料の場合
+            requiredAmount = area * material.usagePerSqM;
+            requiredCans = requiredAmount / material.capacity;
+        }
 
-            result.appendChild(table);
-        });
+        requiredCansCeil = Math.ceil(requiredCans);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${materialName}</td>
+            <td>${material.isAreaBased ? `${requiredAmount.toFixed(2)} 平米` : `${requiredAmount.toFixed(2)} kg`}</td>
+            <td>${requiredCansCeil} 缶</td>
+            <td>${requiredCans.toFixed(2)} 缶</td>
+        `;
+        table.appendChild(row);
+    });
+
+    result.appendChild(table);
+});
+
     };
 
     initCalculationBox('manufacturer1', 'method1', 'calculateBtn1', 'area1', 'result1');
