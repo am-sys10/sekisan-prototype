@@ -7,144 +7,186 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <h1>材料計算ツール</h1>
+
 <div class="container">
+    <!-- 工法1の計算ボックス -->
     <div class="calculation-box">
-        <h2>工法</h2>
+        <h2>工法1</h2>
         <div>
-            <label for="manufacturer">メーカー:</label>
-            <select id="manufacturer">
+            <label for="manufacturer1">メーカー:</label>
+            <select id="manufacturer1">
                 <option value="">選択してください</option>
             </select>
         </div>
         <div>
-            <label for="method">工法:</label>
-            <select id="method">
+            <label for="method1">工法:</label>
+            <select id="method1">
                 <option value="">選択してください</option>
             </select>
         </div>
         <div>
-            <label for="area">面積 (平方メートル):</label>
-            <input type="number" id="area" placeholder="面積を入力">
+            <label for="area1">面積 (平方メートル):</label>
+            <input type="number" id="area1" placeholder="面積を入力">
         </div>
-        <button id="calculateBtn">計算する</button>
-        <div id="result"></div>
+        <div>
+            <label for="additionalArea1">追加する平米数:</label>
+            <input type="number" id="additionalArea1" placeholder="追加する平米数を入力">
+            <button id="addAreaBtn1">追加する</button>
+        </div>
+        <button id="calculateBtn1">計算する</button>
+        <div id="result1"></div>
+    </div>
+
+    <!-- 工法2の計算ボックス -->
+    <div class="calculation-box">
+        <h2>工法2</h2>
+        <div>
+            <label for="manufacturer2">メーカー:</label>
+            <select id="manufacturer2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="method2">工法:</label>
+            <select id="method2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="area2">面積 (平方メートル):</label>
+            <input type="number" id="area2" placeholder="面積を入力">
+        </div>
+        <div>
+            <label for="additionalArea2">追加する平米数:</label>
+            <input type="number" id="additionalArea2" placeholder="追加する平米数を入力">
+            <button id="addAreaBtn2">追加する</button>
+        </div>
+        <button id="calculateBtn2">計算する</button>
+        <div id="result2"></div>
     </div>
 </div>
+
 <script>
-let methods = {}; // JSONデータを格納する変数
+    // methods.json ファイルを読み込む
+    let methods = {};
 
-// JSONファイルをロード
-fetch('methods.json')
-    .then(response => response.json())
-    .then(data => {
-        methods = data;
-        initializeManufacturers();
-    })
-    .catch(error => console.error('JSONファイルの読み込みに失敗しました:', error));
+    fetch('methods.json')
+        .then(response => response.json())
+        .then(data => {
+            methods = data;
+            initManufacturers();
+        });
 
-// メーカーと工法の初期化
-const initializeManufacturers = () => {
-    const manufacturerSelect = document.getElementById('manufacturer');
-    const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
-
-    manufacturers.forEach(manufacturer => {
-        const option = document.createElement('option');
-        option.value = manufacturer;
-        option.textContent = manufacturer;
-        manufacturerSelect.appendChild(option);
-    });
-
-    manufacturerSelect.addEventListener('change', () => {
-        const selectedManufacturer = manufacturerSelect.value;
-        const methodSelect = document.getElementById('method');
-        methodSelect.innerHTML = '<option value="">選択してください</option>';
-
-        if (selectedManufacturer) {
-            Object.entries(methods).forEach(([key, method]) => {
-                if (method.manufacturer === selectedManufacturer) {
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = method.name;
-                    methodSelect.appendChild(option);
-                }
+    const initManufacturers = () => {
+        [1, 2].forEach(num => {
+            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
+            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement('option');
+                option.value = manufacturer;
+                option.textContent = manufacturer;
+                manufacturerSelect.appendChild(option);
             });
-        }
-    });
-};
 
-// 計算処理
-document.getElementById('calculateBtn').addEventListener('click', () => {
-    const area = parseFloat(document.getElementById('area').value);
-    const selectedMethodKey = document.getElementById('method').value;
-    const methodData = methods[selectedMethodKey];
+            manufacturerSelect.addEventListener('change', () => {
+                const methodSelect = document.getElementById(`method${num}`);
+                methodSelect.innerHTML = '<option value="">選択してください</option>';
+                const selectedManufacturer = manufacturerSelect.value;
 
-    if (!area || area <= 0 || !methodData) {
-        document.getElementById('result').textContent = '正しい入力値を選択してください。';
-        return;
-    }
+                Object.entries(methods).forEach(([key, method]) => {
+                    if (method.manufacturer === selectedManufacturer) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = method.name;
+                        methodSelect.appendChild(option);
+                    }
+                });
+            });
+        });
+    };
 
-    const result = document.getElementById('result');
-    result.innerHTML = '';
+    const initCalculationBox = (manufacturerId, methodId, calculateBtnId, areaInputId, additionalAreaId, addAreaBtnId, resultId) => {
+        const calculateBtn = document.getElementById(calculateBtnId);
+        const result = document.getElementById(resultId);
+        const areaInput = document.getElementById(areaInputId);
+        const additionalAreaInput = document.getElementById(additionalAreaId);
+        const addAreaBtn = document.getElementById(addAreaBtnId);
 
-    const table = document.createElement('table');
-    const headerRow = document.createElement('tr');
-    headerRow.innerHTML = `
-        <th>材料名</th>
-        <th>必要量</th>
-        <th>整数</th>
-        <th>実数</th>
-    `;
-    table.appendChild(headerRow);
+        addAreaBtn.addEventListener('click', () => {
+            const additionalArea = parseFloat(additionalAreaInput.value);
+            if (!isNaN(additionalArea) && additionalArea > 0) {
+                const currentArea = parseFloat(areaInput.value) || 0;
+                areaInput.value = currentArea + additionalArea;
+                additionalAreaInput.value = '';
+            } else {
+                alert('正しい平米数を入力してください。');
+            }
+        });
 
-    // 通常材料の計算
-    Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
-        let requiredAmount = 0, requiredCans = 0, requiredCansDecimal = 0;
+        calculateBtn.addEventListener('click', () => {
+            const area = parseFloat(areaInput.value);
+            const selectedMethodKey = document.getElementById(methodId).value;
+            const methodData = methods[selectedMethodKey];
 
-        if (materialData.isAreaBased) {
-            requiredAmount = area * (materialData.usageFactor || 1);
-            requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
-            requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
-        } else {
-            requiredAmount = area * materialData.usagePerSqM * (materialData.usageFactor || 1);
-            requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-            requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
-        }
+            if (!area || area <= 0 || !methodData) {
+                result.textContent = '正しい入力値を選択してください。';
+                return;
+            }
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${materialName}</td>
-            <td>${requiredAmount.toFixed(2)}</td>
-            <td>${requiredCans}</td>
-            <td>${requiredCansDecimal}</td>
-        `;
-        table.appendChild(row);
-    });
+            result.innerHTML = '';
+            const table = document.createElement('table');
 
-    // テープ材料の計算
-    Object.entries(methodData.tapeMaterials || {}).forEach(([tapeName, tapeData]) => {
-        let requiredTapes = 0;
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th style="width: 40%;">材料名</th>
+                <th style="width: 20%;">必要量</th>
+                <th style="width: 20%;">整数</th>
+                <th style="width: 20%;">実数</th>
+            `;
+            table.appendChild(headerRow);
 
-        if (tapeData.calculationMethod === 'perimeter') {
-            const perimeter = Math.sqrt(area) * 4; // 正方形と仮定した外周
-            requiredTapes = Math.ceil(perimeter / tapeData.capacityM);
-        } else if (tapeData.calculationMethod === 'areaBased') {
-            requiredTapes = Math.ceil((area / 10) * 9);
-        }
+            Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
+                let requiredAmount = 0;
+                let requiredCans = 0;
+                let requiredCansDecimal = 0;
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${tapeName}</td>
-            <td>-</td>
-            <td>${requiredTapes}</td>
-            <td>-</td>
-        `;
-        table.appendChild(row);
-    });
+                if (materialData.isAreaBased) {
+                    requiredAmount = area * (materialData.usageFactor || 1);
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
+                    requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
+                } else if (materialData.type === 'tape1') {
+                    requiredAmount = Math.sqrt(area) * 4;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                } else if (materialData.type === 'tape2') {
+                    requiredAmount = (area / 10) * 9;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                } else {
+                    requiredAmount = area * materialData.usagePerSqM * (materialData.usageFactor || 1);
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                }
 
-    result.appendChild(table);
-});
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${materialName}</td>
+                    <td>${Math.floor(requiredAmount)} kg</td>
+                    <td>${requiredCans} set</td>
+                    <td>${requiredCansDecimal} set</td>
+                `;
+                table.appendChild(row);
+            });
+
+            result.appendChild(table);
+        });
+    };
+
+    initCalculationBox('manufacturer1', 'method1', 'calculateBtn1', 'area1', 'additionalArea1', 'addAreaBtn1', 'result1');
+    initCalculationBox('manufacturer2', 'method2', 'calculateBtn2', 'area2', 'additionalArea2', 'addAreaBtn2', 'result2');
 </script>
+
 </body>
 </html>
-
