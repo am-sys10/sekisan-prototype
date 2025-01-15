@@ -35,7 +35,7 @@
             <input type="number" id="additionalArea1" class="add-area-input" placeholder="追加平米数">
             <button id="addAreaBtn1" class="add-area-btn">追加</button>
         </div>
-        <button id="calculateBtn1">計算する</button>
+        <button id="calculateBtn1" class="calculate-btn">計算する</button>
         <div id="result1"></div>
     </div>
 
@@ -63,56 +63,12 @@
             <input type="number" id="additionalArea2" class="add-area-input" placeholder="追加平米数">
             <button id="addAreaBtn2" class="add-area-btn">追加</button>
         </div>
-        <button id="calculateBtn2">計算する</button>
+        <button id="calculateBtn2" class="calculate-btn">計算する</button>
         <div id="result2"></div>
     </div>
 </div>
 
-<script>
-    // methods.json ファイルを読み込む
-    let methods = {};
-
-    fetch('methods.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('methods.json の読み込みに失敗しました');
-            }
-            return response.json();
-        })
-        .then(data => {
-            methods = data;
-            initManufacturers();
-        })
-        .catch(error => console.error(error));
-
-    const initManufacturers = () => {
-        [1, 2].forEach(num => {
-            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
-            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
-            manufacturers.forEach(manufacturer => {
-                const option = document.createElement('option');
-                option.value = manufacturer;
-                option.textContent = manufacturer;
-                manufacturerSelect.appendChild(option);
-            });
-
-            manufacturerSelect.addEventListener('change', () => {
-                const methodSelect = document.getElementById(`method${num}`);
-                methodSelect.innerHTML = '<option value="">選択してください</option>';
-                const selectedManufacturer = manufacturerSelect.value;
-
-                Object.entries(methods).forEach(([key, method]) => {
-                    if (method.manufacturer === selectedManufacturer) {
-                        const option = document.createElement('option');
-                        option.value = key;
-                        option.textContent = method.name;
-                        methodSelect.appendChild(option);
-                    }
-                });
-            });
-        });
-    };
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
