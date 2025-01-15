@@ -73,4 +73,6 @@
             "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
             "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
         }
-    };
+    }
+}
+
