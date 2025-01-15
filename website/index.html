@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>材料計算ツール</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .calculation-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            max-width: 400px;
+            width: 100%;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+<h1>材料計算ツール</h1>
+
+<div class="container">
+    <!-- 工法1の計算ボックス -->
+    <div class="calculation-box">
+        <h2>工法1</h2>
+        <div>
+            <label for="manufacturer1">メーカー:</label>
+            <select id="manufacturer1">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="method1">工法:</label>
+            <select id="method1">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="area1">面積 (平方メートル):</label>
+            <input type="number" id="area1" placeholder="面積を入力">
+        </div>
+        <button id="calculateBtn1">計算する</button>
+        <div id="result1"></div>
+    </div>
+
+    <!-- 工法2の計算ボックス -->
+    <div class="calculation-box">
+        <h2>工法2</h2>
+        <div>
+            <label for="manufacturer2">メーカー:</label>
+            <select id="manufacturer2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="method2">工法:</label>
+            <select id="method2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="area2">面積 (平方メートル):</label>
+            <input type="number" id="area2" placeholder="面積を入力">
+        </div>
+        <button id="calculateBtn2">計算する</button>
+        <div id="result2"></div>
+    </div>
+</div>
+
+<script>
+    // 工法データ
+    const methods = {
+        "sd-kk20t": {
+            "name": "サラセーヌSD-KK20T(フッ素)",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
+            }
+        },
+        "sd-kk30t": {
+            "name": "サラセーヌSD-KK30T（フッ素）",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
+                "サラセーヌクロス＃2000": {
+                    "isAreaBased": true,
+                    "capacitySqM": 100,
+                    "usageFactor": 1
+                }
+            }
+        },
+        "sd-立上り20t":{
+            "name":"サラセーヌSD-立上り20T（フッ素）",
+            "manufacturer":"AGCポリマー建材",
+            "materials":{
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
+                "サラセーヌクロス＃4000": {
+                    "isAreaBased": true,
+                    "capacitySqM": 50,
+                    "usageFactor": 1
+                }
+            }
+        },
+        "sdn-立上り20t":{
+            "name":"サラセーヌSDN-立上り20T（フッ素）",
+            "manufacturer":"AGCポリマー建材",
+            "materials":{
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+                "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
+            }
+        }
+    }
+
+    const initCalculationBox = (manufacturerId, methodId, calculateBtnId, areaInputId, resultId) => {
+        const manufacturerSelect = document.getElementById(manufacturerId);
+        const methodSelect = document.getElementById(methodId);
+        const calculateBtn = document.getElementById(calculateBtnId);
+        const result = document.getElementById(resultId);
+        const areaInput = document.getElementById(areaInputId);
+
+        // メーカー一覧を生成
+        const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+        manufacturers.forEach(manufacturer => {
+            const option = document.createElement('option');
+            option.value = manufacturer;
+            option.textContent = manufacturer;
+            manufacturerSelect.appendChild(option);
+        });
+
+        // メーカー選択時に対応する工法を表示
+        manufacturerSelect.addEventListener('change', () => {
+            const selectedManufacturer = manufacturerSelect.value;
+            methodSelect.innerHTML = '<option value="">選択してください</option>';
+
+            if (selectedManufacturer) {
+                Object.entries(methods).forEach(([key, method]) => {
+                    if (method.manufacturer === selectedManufacturer) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = method.name;
+                        methodSelect.appendChild(option);
+                    }
+                });
+            }
+        });
+
+        // 計算処理
+        calculateBtn.addEventListener('click', () => {
+            const area = parseFloat(areaInput.value);
+            const selectedMethodKey = methodSelect.value;
+            const methodData = methods[selectedMethodKey];
+
+            if (!area || area <= 0 || !methodData) {
+                result.textContent = '正しい入力値を選択してください。';
+                return;
+            }
+
+            result.innerHTML = '';
+            const table = document.createElement('table');
+
+            // テーブルヘッダー
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th style="width: 40%;">材料名</th>
+                <th style="width: 20%;">必要量</th>
+                <th style="width: 20%;">整数</th>
+                <th style="width: 20%;">実数</th>
+            `;
+            table.appendChild(headerRow);
+
+            // 各材料の行を作成
+            Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
+                let requiredAmount = 0;
+                let requiredCans = 0;
+                let requiredCansDecimal = 0;
+
+                if (materialData.isAreaBased) {
+                    requiredAmount = area * (materialData.usageFactor || 1);
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
+                    requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
+                } else {
+                    const usageFactor = materialData.usageFactor || 1;
+                    requiredAmount = area * materialData.usagePerSqM * usageFactor;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                 <td>${materialName}</td>
+                 <td>${Math.floor(requiredAmount)} kg</td>
+                 <td>${requiredCans} set</td>
+                 <td>${requiredCansDecimal} set</td>
+
+                `;
+                table.appendChild(row);
+            });
+
+            result.appendChild(table);
+        });
+    };
+
+    initCalculationBox('manufacturer1', 'method1', 'calculateBtn1', 'area1', 'result1');
+    initCalculationBox('manufacturer2', 'method2', 'calculateBtn2', 'area2', 'result2');
+</script>
+
+</body>
+</html>
