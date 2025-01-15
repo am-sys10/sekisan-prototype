@@ -1,0 +1,14 @@
+{
+    "sd-kk20t": {
+        "name": "サラセーヌSD-KK20T(フッ素)",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 }
+        },
+        "tapeMaterials": {
+            "テープ1": { "calculationMethod": "perimeter", "capacityM": 50 },
+            "テープ2": { "calculationMethod": "areaBased" }
+        }
+    }
+}
