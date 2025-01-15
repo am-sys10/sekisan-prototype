@@ -120,67 +120,35 @@
             "name": "サラセーヌSD-KK20T(フッ素)",
             "manufacturer": "AGCポリマー建材",
             "materials": {
-                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-                "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16 },
+                "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15 },
+                "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8 }
             }
         },
         "sd-kk30t": {
             "name": "サラセーヌSD-KK30T（フッ素）",
             "manufacturer": "AGCポリマー建材",
             "materials": {
-                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-                "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
-                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
-                "サラセーヌクロス＃2000": {
-                    "isAreaBased": true,
-                    "capacitySqM": 100,
-                    "usageFactor": 1
-                }
+                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16 },
+                "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24 },
+                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15 },
+                "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8 },
+                "サラセーヌクロス＃2000": { "isAreaBased": true, "capacitySqM": 100 }
             }
         },
-        "sd-立上り20t":{
-            "name":"サラセーヌSD-立上り20T（フッ素）",
-            "manufacturer":"AGCポリマー建材",
-            "materials":{
-                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-                "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
-                "サラセーヌクロス＃4000": {
-                    "isAreaBased": true,
-                    "capacitySqM": 50,
-                    "usageFactor": 1
-                }
+        "sd-ez30tj": {
+            "name": "サラセーヌSD-EZTJ（フッ素）",
+            "manufacturer": "AGCポリマー建材",
+            "materials": {
+                "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16 },
+                "サラセーヌEZ": { "usagePerSqM": 3.9, "capacity": 24 },
+                "TJトップ": { "usagePerSqM": 0.2, "capacity": 15 },
+                "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8 },
+                "サラセーヌクロス＃2000": { "isAreaBased": true, "capacitySqM": 100 }
             }
-        },
-        "sdn-立上り20t":{
-            "name":"サラセーヌSDN-立上り20T（フッ素）",
-            "manufacturer":"AGCポリマー建材",
-            "materials":{
-                "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-                "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-                "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-                "サラセーヌTフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
-            }
-        },
-        "sd-ez30tj"
-             "name":"サラセーヌSD-EZTJ（フッ素）",
-            "manufacturer":"AGCポリマー建材",
-            "materials":{
-                "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-                "サラセーヌEZ": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
-                "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-                "TJフッ素":{"usagePerSqM":0.15,"capacity":8,"usageFacor":1},
-                "サラセーヌクロス＃2000": {
-                    "isAreaBased": true,
-                    "capacitySqM": 100,
-                    "usageFactor": 1｝
-                ｝
-            ｝
-        ｝;
+        }
+    };
 
     const initCalculationBox = (manufacturerId, methodId, calculateBtnId, areaInputId, resultId) => {
         const manufacturerSelect = document.getElementById(manufacturerId);
@@ -198,7 +166,6 @@
             manufacturerSelect.appendChild(option);
         });
 
-        // メーカー選択時に対応する工法を表示
         manufacturerSelect.addEventListener('change', () => {
             const selectedManufacturer = manufacturerSelect.value;
             methodSelect.innerHTML = '<option value="">選択してください</option>';
@@ -215,7 +182,6 @@
             }
         });
 
-        // 計算処理
         calculateBtn.addEventListener('click', () => {
             const area = parseFloat(areaInput.value);
             const selectedMethodKey = methodSelect.value;
@@ -232,37 +198,25 @@
             // テーブルヘッダー
             const headerRow = document.createElement('tr');
             headerRow.innerHTML = `
-                <th style="width: 40%;">材料名</th>
-                <th style="width: 20%;">必要量</th>
-                <th style="width: 20%;">整数</th>
-                <th style="width: 20%;">実数</th>
+                <th>材料名</th>
+                <th>必要量 (kg)</th>
+                <th>整数 (缶数)</th>
+                <th>実数 (缶数)</th>
             `;
             table.appendChild(headerRow);
 
-            // 各材料の行を作成
-            Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
-                let requiredAmount = 0;
-                let requiredCans = 0;
-                let requiredCansDecimal = 0;
-
-                if (materialData.isAreaBased) {
-                    requiredAmount = area * (materialData.usageFactor || 1);
-                    requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
-                    requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
-                } else {
-                    const usageFactor = materialData.usageFactor || 1;
-                    requiredAmount = area * materialData.usagePerSqM * usageFactor;
-                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
-                }
+            // 材料データ計算
+            Object.entries(methodData.materials).forEach(([materialName, material]) => {
+                const usage = material.isAreaBased
+                    ? area / material.capacitySqM
+                    : area * material.usagePerSqM / material.capacity;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                 <td>${materialName}</td>
-                 <td>${Math.floor(requiredAmount)} kg</td>
-                 <td>${requiredCans} set</td>
-                 <td>${requiredCansDecimal} set</td>
-
+                    <td>${materialName}</td>
+                    <td>${Math.ceil(area * material.usagePerSqM)} kg</td>
+                    <td>${Math.ceil(usage)} 缶</td>
+                    <td>${usage.toFixed(2)} 缶</td>
                 `;
                 table.appendChild(row);
             });
