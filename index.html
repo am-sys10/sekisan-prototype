@@ -68,6 +68,51 @@
     </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+    // methods.json ファイルを読み込む
+    let methods = {};
+
+    fetch('methods.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('methods.json の読み込みに失敗しました');
+            }
+            return response.json();
+        })
+        .then(data => {
+            methods = data;
+            initManufacturers();
+        })
+        .catch(error => console.error(error));
+
+    const initManufacturers = () => {
+        [1, 2].forEach(num => {
+            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
+            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement('option');
+                option.value = manufacturer;
+                option.textContent = manufacturer;
+                manufacturerSelect.appendChild(option);
+            });
+
+            manufacturerSelect.addEventListener('change', () => {
+                const methodSelect = document.getElementById(`method${num}`);
+                methodSelect.innerHTML = '<option value="">選択してください</option>';
+                const selectedManufacturer = manufacturerSelect.value;
+
+                Object.entries(methods).forEach(([key, method]) => {
+                    if (method.manufacturer === selectedManufacturer) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = method.name;
+                        methodSelect.appendChild(option);
+                    }
+                });
+            });
+        });
+    };
+</script>
+
 </body>
 </html>
