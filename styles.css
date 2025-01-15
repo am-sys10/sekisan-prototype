@@ -43,7 +43,7 @@ input[type="number"], select {
 .add-area-container {
     display: flex;
     align-items: center;
-    gap: 5px; /* 入力欄とボタンの間隔 */
+    gap: 5px;
     margin-bottom: 10px;
 }
 
@@ -54,8 +54,8 @@ input[type="number"], select {
 }
 
 .add-area-btn {
-    padding: 5px 10px; /* ボタンの大きさ */
-    font-size: 14px;
+    padding: 4px 8px; /* ボタンの小ささを調整 */
+    font-size: 12px;
     background-color: #007bff;
     color: white;
     border: none;
