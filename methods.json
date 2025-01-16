@@ -113,13 +113,13 @@
       "ジョイントテープ":{
         "isTapeBased": true,
         "rollLength": 50,
-        "calculateTapeOption2": true,  //√平米数×4
+        "calculateTapeOption2": true,
         "capacity": 50,
         "usagePerSqM": 1},
       "MBテープ": {
         "isTapeBased": true,
         "rollLength": 20,
-        "calculateTapeOption3": true,  // 平米数 ÷ 10 × 9
+        "calculateTapeOption3": true, 
         "capacity": 20,
         "usagePerSqM": 1}
         }
