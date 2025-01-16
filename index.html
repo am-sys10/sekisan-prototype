@@ -94,6 +94,7 @@
 <h1>材料計算ツール</h1>
 
 <div class="container">
+    <!-- 工法1の計算ボックス -->
     <div class="calculation-box">
         <h2>工法1</h2>
         <div>
@@ -120,10 +121,38 @@
         <button id="calculateBtn1" class="calculate-btn">計算する</button>
         <div id="result1"></div>
     </div>
+
+    <!-- 工法2の計算ボックス -->
+    <div class="calculation-box">
+        <h2>工法2</h2>
+        <div>
+            <label for="manufacturer2">メーカー:</label>
+            <select id="manufacturer2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="method2">工法:</label>
+            <select id="method2">
+                <option value="">選択してください</option>
+            </select>
+        </div>
+        <div>
+            <label for="area2">面積 (平米):</label>
+            <input type="number" id="area2" placeholder="面積を入力">
+        </div>
+        <div class="add-area-container">
+            <label for="additionalArea2">＋:</label>
+            <input type="number" id="additionalArea2" class="add-area-input" placeholder="追加平米数">
+            <button id="addAreaBtn2" class="add-area-btn">追加</button>
+        </div>
+        <button id="calculateBtn2" class="calculate-btn">計算する</button>
+        <div id="result2"></div>
+    </div>
 </div>
 
 <script>
-    // methods.json の読み込み
+    // methods.json の読み込みと初期化
     let methods = {};
 
     fetch('methods.json')
@@ -133,40 +162,41 @@
             initManufacturers();
         });
 
-    // メーカーと工法の初期化
     const initManufacturers = () => {
-        const manufacturerSelect = document.getElementById('manufacturer1');
-        const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
-        manufacturers.forEach(manufacturer => {
-            const option = document.createElement('option');
-            option.value = manufacturer;
-            option.textContent = manufacturer;
-            manufacturerSelect.appendChild(option);
-        });
+        [1, 2].forEach(num => {
+            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
+            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement('option');
+                option.value = manufacturer;
+                option.textContent = manufacturer;
+                manufacturerSelect.appendChild(option);
+            });
 
-        manufacturerSelect.addEventListener('change', () => {
-            const methodSelect = document.getElementById('method1');
-            methodSelect.innerHTML = '<option value="">選択してください</option>';
-            const selectedManufacturer = manufacturerSelect.value;
+            manufacturerSelect.addEventListener('change', () => {
+                const methodSelect = document.getElementById(`method${num}`);
+                methodSelect.innerHTML = '<option value="">選択してください</option>';
+                const selectedManufacturer = manufacturerSelect.value;
 
-            Object.entries(methods).forEach(([key, method]) => {
-                if (method.manufacturer === selectedManufacturer) {
-                    const option = document.createElement('option');
-                    option.value = key;
-                    option.textContent = method.name;
-                    methodSelect.appendChild(option);
-                }
+                Object.entries(methods).forEach(([key, method]) => {
+                    if (method.manufacturer === selectedManufacturer) {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = method.name;
+                        methodSelect.appendChild(option);
+                    }
+                });
             });
         });
     };
 
-    // 計算ボックスの初期化
-    const initCalculationBox = () => {
-        const areaInput = document.getElementById('area1');
-        const additionalAreaInput = document.getElementById('additionalArea1');
-        const addAreaBtn = document.getElementById('addAreaBtn1');
-        const calculateBtn = document.getElementById('calculateBtn1');
-        const resultDiv = document.getElementById('result1');
+    // 計算ロジックの初期化
+    const initCalculationBox = (num) => {
+        const areaInput = document.getElementById(`area${num}`);
+        const additionalAreaInput = document.getElementById(`additionalArea${num}`);
+        const addAreaBtn = document.getElementById(`addAreaBtn${num}`);
+        const calculateBtn = document.getElementById(`calculateBtn${num}`);
+        const resultDiv = document.getElementById(`result${num}`);
 
         addAreaBtn.addEventListener('click', () => {
             const additionalArea = parseFloat(additionalAreaInput.value);
@@ -181,7 +211,7 @@
 
         calculateBtn.addEventListener('click', () => {
             const area = parseFloat(areaInput.value);
-            const selectedMethodKey = document.getElementById('method1').value;
+            const selectedMethodKey = document.getElementById(`method${num}`).value;
             const methodData = methods[selectedMethodKey];
 
             if (!area || area <= 0 || !methodData) {
@@ -194,37 +224,42 @@
 
             const headerRow = document.createElement('tr');
             headerRow.innerHTML = `
-                <th>材料名</th>
-                <th>必要量</th>
-                <th>整数</th>
-                <th>実数</th>
+                <th style="width: 40%;">材料名</th>
+                <th style="width: 20%;">必要量</th>
+                <th style="width: 20%;">整数</th>
+                <th style="width: 20%;">実数</th>
             `;
             table.appendChild(headerRow);
 
             Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
                 let requiredAmount = 0;
+                let requiredCans = 0;
+                let requiredCansDecimal = 0;
 
-                if (materialData.isTapeBased) {
-                    if (materialData.calculateTapeOption2) {
-                        requiredAmount = Math.sqrt(area) * 4;
-                    } else if (materialData.calculateTapeOption3) {
-                        requiredAmount = (area / 10) * 9;
-                    } else {
-                        requiredAmount = area * (materialData.usagePerSqM || 1);
-                    }
+                if (materialData.isAreaBased) {
+                    requiredAmount = area * (materialData.usageFactor || 1);
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
+                    requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
+                } else if (materialData.type === 'tape1') {
+                    requiredAmount = Math.sqrt(area) * 4;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
+                } else if (materialData.type === 'tape2') {
+                    requiredAmount = (area / 10) * 9;
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
                 } else {
                     requiredAmount = area * materialData.usagePerSqM * (materialData.usageFactor || 1);
+                    requiredCans = Math.ceil(requiredAmount / materialData.capacity);
+                    requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
                 }
-
-                const requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-                const requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${materialName}</td>
-                    <td>${requiredAmount.toFixed(2)}</td>
-                    <td>${requiredCans}</td>
-                    <td>${requiredCansDecimal}</td>
+                    <td>${Math.floor(requiredAmount)} kg</td>
+                    <td>${requiredCans} set</td>
+                    <td>${requiredCansDecimal} set</td>
                 `;
                 table.appendChild(row);
             });
@@ -233,7 +268,9 @@
         });
     };
 
-    initCalculationBox();
+    // Initialize calculation boxes
+    initCalculationBox(1);
+    initCalculationBox(2);
 </script>
 
 </body>
