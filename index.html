@@ -82,6 +82,25 @@
             color: #333;
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: right; /* 数字を右揃えにする */
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            text-align: right; /* 数字を右揃えに */
+        }
+
         @media (max-width: 768px) {
             .calculation-box {
                 width: 90%;
@@ -223,11 +242,11 @@
             const table = document.createElement('table');
 
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = `
+            headerRow.innerHTML = ` 
                 <th style="width: 40%;">材料名</th>
                 <th style="width: 20%;">必要量</th>
-                <th style="width: 20%;">整数</th>
                 <th style="width: 20%;">実数</th>
+                <th style="width: 20%;">整数</th>
             `;
             table.appendChild(headerRow);
 
@@ -257,9 +276,8 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${materialName}</td>
-                    <td>${Math.floor(requiredAmount)}</td>
-                    <td>${requiredCans}</td>
-                    <td>${requiredCansDecimal}</td>
+                    <td>${requiredCansDecimal}</td> <!-- 実数を左側に表示 -->
+                    <td>${Math.floor(requiredAmount)}</td> <!-- 整数を右側に表示 -->
                 `;
                 table.appendChild(row);
             });
