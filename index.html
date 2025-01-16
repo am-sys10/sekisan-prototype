@@ -12,11 +12,6 @@
             background-color: #f9f9f9;
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -34,82 +29,91 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .areas-container {
+            margin-bottom: 15px;
         }
 
-        input[type="number"], select {
-            width: calc(100% - 10px);
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .add-area-container {
+        .area-input-group {
             display: flex;
             align-items: center;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 5px;
         }
 
-        .add-area-input {
-            width: 80px;
+        .area-input {
+            width: 100px;
             padding: 5px;
-            font-size: 14px;
         }
 
-        .add-area-btn, .calculate-btn {
+        .remove-area-btn {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-area-btn {
+            margin-top: 10px;
             padding: 8px 12px;
-            font-size: 14px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            min-width: 800px;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+
+        .calculate-btn {
+            padding: 8px 12px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
-        .add-area-btn:hover, .calculate-btn:hover {
-            background-color: #0056b3;
-        }
-
-        #result1, #result2 {
+        .area-total {
             margin-top: 10px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .area-total span {
             font-weight: bold;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: right; /* 数字を右揃えにする */
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        td {
-            text-align: right; /* 数字を右揃えに */
-        }
-
-        @media (max-width: 768px) {
-            .calculation-box {
-                width: 90%;
-            }
+            color: #28a745;
         }
     </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-
 <h1>材料計算ツール</h1>
 
 <div class="container">
@@ -128,15 +132,17 @@
                 <option value="">選択してください</option>
             </select>
         </div>
-        <div>
-            <label for="area1">面積 (平米):</label>
-            <input type="number" id="area1" placeholder="面積を入力">
+        <div class="areas-container" id="areas1">
+            <label>面積 (平米):</label>
+            <div class="area-input-group">
+                <input type="number" class="area-input" placeholder="面積を入力">
+                <button class="remove-area-btn">削除</button>
+            </div>
+            <div class="area-total">
+        　　　合計面積: <span id="totalArea1">0</span> m²
+   　　　　 </div>
         </div>
-        <div class="add-area-container">
-            <label for="additionalArea1">＋:</label>
-            <input type="number" id="additionalArea1" class="add-area-input" placeholder="追加平米数">
-            <button id="addAreaBtn1" class="add-area-btn">追加</button>
-        </div>
+        <button class="add-area-btn" onclick="addAreaInput(1)">面積を追加</button>
         <button id="calculateBtn1" class="calculate-btn">計算する</button>
         <div id="result1"></div>
     </div>
@@ -156,24 +162,28 @@
                 <option value="">選択してください</option>
             </select>
         </div>
-        <div>
-            <label for="area2">面積 (平米):</label>
-            <input type="number" id="area2" placeholder="面積を入力">
+        <div class="areas-container" id="areas2">
+            <label>面積 (平米):</label>
+            <div class="area-input-group">
+                <input type="number" class="area-input" placeholder="面積を入力">
+                <button class="remove-area-btn">削除</button>
+            <div class="area-total">
+        　　　合計面積: <span id="totalArea2">0</span> m²
+   　　　　 </div>
+            </div>
         </div>
-        <div class="add-area-container">
-            <label for="additionalArea2">＋:</label>
-            <input type="number" id="additionalArea2" class="add-area-input" placeholder="追加平米数">
-            <button id="addAreaBtn2" class="add-area-btn">追加</button>
-        </div>
+        <button class="add-area-btn" onclick="addAreaInput(2)">面積を追加</button>
         <button id="calculateBtn2" class="calculate-btn">計算する</button>
         <div id="result2"></div>
     </div>
 </div>
 
+<button id="exportExcelBtn" class="calculate-btn">見積もりをエクスポート</button>
+
 <script>
-    // methods.json の読み込みと初期化
     let methods = {};
 
+    // JSON データを取得して初期化
     fetch('methods.json')
         .then(response => response.json())
         .then(data => {
@@ -181,6 +191,7 @@
             initManufacturers();
         });
 
+    // メーカーと工法の初期化
     const initManufacturers = () => {
         [1, 2].forEach(num => {
             const manufacturerSelect = document.getElementById(`manufacturer${num}`);
@@ -209,88 +220,184 @@
         });
     };
 
-    // 計算ロジックの初期化
+   // 面積合計を更新する関数
+    function updateAreaTotal(num) {
+        const areasContainer = document.getElementById(`areas${num}`);
+        const areaInputs = areasContainer.querySelectorAll('.area-input');
+        const totalArea = Array.from(areaInputs)
+            .map(input => parseFloat(input.value) || 0)
+            .reduce((sum, area) => sum + area, 0);
+        
+        document.getElementById(`totalArea${num}`).textContent = totalArea.toFixed(2);
+    }
+
+    // 面積入力欄を追加する関数（更新）
+    function addAreaInput(num) {
+        const areasContainer = document.getElementById(`areas${num}`);
+        const newGroup = document.createElement('div');
+        newGroup.className = 'area-input-group';
+        newGroup.innerHTML = `
+            <input type="number" class="area-input" placeholder="面積を入力" oninput="updateAreaTotal(${num})">
+            <button class="remove-area-btn">削除</button>
+        `;
+        
+        // 合計表示の前に新しい入力グループを挿入
+        const totalDisplay = areasContainer.querySelector('.area-total');
+        areasContainer.insertBefore(newGroup, totalDisplay);
+
+        // 削除ボタンのイベントリスナーを追加
+        newGroup.querySelector('.remove-area-btn').addEventListener('click', () => {
+            areasContainer.removeChild(newGroup);
+            updateAreaTotal(num); // 削除後に合計を更新
+        });
+    }
+
+    // 既存の削除ボタンにイベントリスナーを追加（更新）
+    document.querySelectorAll('.remove-area-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const group = e.target.parentElement;
+            const areasContainer = group.parentElement;
+            const num = areasContainer.id.slice(-1); // areas1 or areas2 から数字を取得
+            
+            if (areasContainer.querySelectorAll('.area-input-group').length > 1) {
+                group.parentElement.removeChild(group);
+                updateAreaTotal(num); // 削除後に合計を更新
+            }
+        });
+    });
+
+    // 既存の入力フィールドにもイベントリスナーを追加
+    document.querySelectorAll('.area-input').forEach(input => {
+        const num = input.closest('.areas-container').id.slice(-1);
+        input.addEventListener('input', () => updateAreaTotal(num));
+    });
+
+    // 初期化時に合計を表示
+    updateAreaTotal(1);
+    updateAreaTotal(2);
+
     const initCalculationBox = (num) => {
-        const areaInput = document.getElementById(`area${num}`);
-        const additionalAreaInput = document.getElementById(`additionalArea${num}`);
-        const addAreaBtn = document.getElementById(`addAreaBtn${num}`);
         const calculateBtn = document.getElementById(`calculateBtn${num}`);
         const resultDiv = document.getElementById(`result${num}`);
 
-        addAreaBtn.addEventListener('click', () => {
-            const additionalArea = parseFloat(additionalAreaInput.value);
-            if (!isNaN(additionalArea) && additionalArea > 0) {
-                const currentArea = parseFloat(areaInput.value) || 0;
-                areaInput.value = currentArea + additionalArea;
-                additionalAreaInput.value = '';
-            } else {
-                alert('正しい平米数を入力してください。');
-            }
-        });
-
         calculateBtn.addEventListener('click', () => {
-            const area = parseFloat(areaInput.value);
+            const areasContainer = document.getElementById(`areas${num}`);
+            const areaInputs = areasContainer.querySelectorAll('.area-input');
+            const totalArea = Array.from(areaInputs)
+                .map(input => parseFloat(input.value) || 0)
+                .reduce((sum, area) => sum + area, 0);
+
             const selectedMethodKey = document.getElementById(`method${num}`).value;
             const methodData = methods[selectedMethodKey];
 
-            if (!area || area <= 0 || !methodData) {
+            if (totalArea <= 0 || !methodData) {
                 resultDiv.textContent = '正しい入力値を選択してください。';
                 return;
             }
 
-            resultDiv.innerHTML = '';
+            resultDiv.innerHTML = '<div class="table-container"></div>';
+            const tableContainer = resultDiv.querySelector('.table-container');
             const table = document.createElement('table');
-
             const headerRow = document.createElement('tr');
-            headerRow.innerHTML = ` 
-                <th style="width: 40%;">材料名</th>
-                <th style="width: 20%;">必要量</th>
-                <th style="width: 20%;">実数</th>
-                <th style="width: 20%;">整数</th>
+            headerRow.innerHTML = `
+                <th>材料名</th>
+                <th>必要量</th>
+                <th>実数</th>
+                <th>整数</th>
+                <th>単価</th>
+                <th>金額</th>
             `;
             table.appendChild(headerRow);
 
+            let totalCost = 0;
             Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
                 let requiredAmount = 0;
                 let requiredCans = 0;
                 let requiredCansDecimal = 0;
 
                 if (materialData.isAreaBased) {
-                    requiredAmount = area * (materialData.usageFactor || 1);
+                    requiredAmount = totalArea * (materialData.usageFactor || 1);
                     requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
                     requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
                 } else if (materialData.type === 'tape1') {
-                    requiredAmount = Math.sqrt(area) * 4;
+                    requiredAmount = Math.sqrt(totalArea) * 4;
                     requiredCans = Math.ceil(requiredAmount / materialData.capacity);
                     requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
                 } else if (materialData.type === 'tape2') {
-                    requiredAmount = (area / 10) * 9;
+                    requiredAmount = (totalArea / 10) * 9;
                     requiredCans = Math.ceil(requiredAmount / materialData.capacity);
                     requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
                 } else {
-                    requiredAmount = area * materialData.usagePerSqM * (materialData.usageFactor || 1);
+                    requiredAmount = totalArea * materialData.usagePerSqM * (materialData.usageFactor || 1);
                     requiredCans = Math.ceil(requiredAmount / materialData.capacity);
                     requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
                 }
 
                 const row = document.createElement('tr');
+                const unitPriceInput = document.createElement('input');
+                unitPriceInput.type = 'number';
+                unitPriceInput.placeholder = '単価を入力';
+                const costCell = document.createElement('td');
+
+                unitPriceInput.addEventListener('input', () => {
+                    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+                    const materialCost = requiredCans * unitPrice;
+                    costCell.textContent = materialCost.toLocaleString();
+                    updateTotalCost(table);
+                });
+
                 row.innerHTML = `
                     <td>${materialName}</td>
-                    <td>${Math.floor(requiredAmount)}</td> <!-- 必要量 -->
-                    <td>${requiredCansDecimal}</td> <!-- 実数値 -->
-                    <td>${requiredCans}</td> <!-- 整数表示 -->
+                    <td>${Math.floor(requiredAmount)}</td>
+                    <td>${requiredCansDecimal}</td>
+                    <td>${requiredCans}</td>
                 `;
+                const priceCell = document.createElement('td');
+                priceCell.appendChild(unitPriceInput);
+                row.appendChild(priceCell);
+                row.appendChild(costCell);
                 table.appendChild(row);
             });
 
-            resultDiv.appendChild(table);
+            const totalRow = document.createElement('tr');
+            totalRow.innerHTML = `
+                <td colspan="5" style="text-align: right; font-weight: bold;">合計:</td>
+                <td id="totalCost${num}">0</td>
+            `;
+            table.appendChild(totalRow);
+            tableContainer.appendChild(table);
         });
     };
 
-    // Initialize calculation boxes
+    // 合計金額を更新する関数
+    function updateTotalCost(table) {
+        const rows = table.querySelectorAll('tr:not(:last-child)');
+        let total = 0;
+        rows.forEach(row => {
+            const costCell = row.lastElementChild;
+            if (costCell.textContent) {
+                total += parseInt(costCell.textContent.replace(/,/g, '')) || 0;
+            }
+        });
+        const totalCell = table.querySelector('tr:last-child td:last-child');
+        totalCell.textContent = total.toLocaleString() + ' 円';
+    }
+
     initCalculationBox(1);
     initCalculationBox(2);
-</script>
 
+    document.getElementById('exportExcelBtn').addEventListener('click', () => {
+        const workbook = XLSX.utils.book_new();
+        [1, 2].forEach(num => {
+            const resultDiv = document.getElementById(`result${num}`);
+            const table = resultDiv.querySelector('table');
+            if (table) {
+                const ws = XLSX.utils.table_to_sheet(table);
+                XLSX.utils.book_append_sheet(workbook, ws, `工法${num}`);
+            }
+        });
+        XLSX.writeFile(workbook, '見積もり.xlsx');
+    });
+</script>
 </body>
 </html>
