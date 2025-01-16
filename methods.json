@@ -50,7 +50,7 @@
         }
     },
     "sd-ez30tj": {
-        "name": "サラセーヌSD-EZTJ（フッ素）",
+        "name": "サラセーヌSD-EZ30TJ（フッ素）",
         "manufacturer": "AGCポリマー建材",
         "materials": {
             "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
@@ -63,5 +63,40 @@
                 "usageFactor": 1
             }
         }
-    }
+    },
+    "sd-ez20tj": {
+        "name": "サラセーヌSD-EZ20TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+     "sd-ez立上り20t": {
+        "name": "サラセーヌSD-EZ立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+            "サラセーヌクロス＃4000": {
+                "isAreaBased": true,
+                "capacitySqM": 50,
+                "usageFactor": 1
+            }
+        }
+     },
+     "sdn-ez立上り20t": {
+        "name": "サラセーヌSDN-EZ立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+     }
 }
