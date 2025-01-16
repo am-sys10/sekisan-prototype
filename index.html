@@ -223,32 +223,61 @@
         });
     };
 
-    // 面積入力欄を追加する関数
+   // 面積合計を更新する関数
+    function updateAreaTotal(num) {
+        const areasContainer = document.getElementById(`areas${num}`);
+        const areaInputs = areasContainer.querySelectorAll('.area-input');
+        const totalArea = Array.from(areaInputs)
+            .map(input => parseFloat(input.value) || 0)
+            .reduce((sum, area) => sum + area, 0);
+        
+        document.getElementById(`totalArea${num}`).textContent = totalArea.toFixed(2);
+    }
+
+    // 面積入力欄を追加する関数（更新）
     function addAreaInput(num) {
         const areasContainer = document.getElementById(`areas${num}`);
         const newGroup = document.createElement('div');
         newGroup.className = 'area-input-group';
         newGroup.innerHTML = `
-            <input type="number" class="area-input" placeholder="面積を入力">
+            <input type="number" class="area-input" placeholder="面積を入力" oninput="updateAreaTotal(${num})">
             <button class="remove-area-btn">削除</button>
         `;
-        areasContainer.appendChild(newGroup);
+        
+        // 合計表示の前に新しい入力グループを挿入
+        const totalDisplay = areasContainer.querySelector('.area-total');
+        areasContainer.insertBefore(newGroup, totalDisplay);
 
         // 削除ボタンのイベントリスナーを追加
         newGroup.querySelector('.remove-area-btn').addEventListener('click', () => {
             areasContainer.removeChild(newGroup);
+            updateAreaTotal(num); // 削除後に合計を更新
         });
     }
 
-    // 既存の削除ボタンにイベントリスナーを追加
+    // 既存の削除ボタンにイベントリスナーを追加（更新）
     document.querySelectorAll('.remove-area-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const group = e.target.parentElement;
-            if (group.parentElement.children.length > 1) { // 最低1つは残す
+            const areasContainer = group.parentElement;
+            const num = areasContainer.id.slice(-1); // areas1 or areas2 から数字を取得
+            
+            if (areasContainer.querySelectorAll('.area-input-group').length > 1) {
                 group.parentElement.removeChild(group);
+                updateAreaTotal(num); // 削除後に合計を更新
             }
         });
     });
+
+    // 既存の入力フィールドにもイベントリスナーを追加
+    document.querySelectorAll('.area-input').forEach(input => {
+        const num = input.closest('.areas-container').id.slice(-1);
+        input.addEventListener('input', () => updateAreaTotal(num));
+    });
+
+    // 初期化時に合計を表示
+    updateAreaTotal(1);
+    updateAreaTotal(2);
 
     const initCalculationBox = (num) => {
         const calculateBtn = document.getElementById(`calculateBtn${num}`);
