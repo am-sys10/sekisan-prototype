@@ -111,15 +111,13 @@
                 "capacitySqM": 15,
                 "usageFactor": 1.06},
       "ジョイントテープ":{
-        "isTapeBased": true,
+        "type": "tape2",
         "rollLength": 50,
-        "calculateTapeOption2": true,
         "capacity": 50,
         "usagePerSqM": 1},
       "MBテープ": {
-        "isTapeBased": true,
+        "type": "tape1",
         "rollLength": 20,
-        "calculateTapeOption3": true, 
         "capacity": 20,
         "usagePerSqM": 1}
         }
