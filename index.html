@@ -99,7 +99,21 @@
             border-radius: 4px;
             cursor: pointer;
         }
-    </style>
+        /* 面積合計表示用の新しいスタイル */
+   　　 .area-total {
+        　　margin-top: 10px;
+        　　padding: 8px;
+        　　background-color: #f8f9fa;
+        　　border-radius: 4px;
+        　　border: 1px solid #dee2e6;
+    　　}
+    
+   　　 .area-total span {
+       　　 font-weight: bold;
+        　　color: #28a745;
+    }
+　　</style>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -127,6 +141,9 @@
                 <input type="number" class="area-input" placeholder="面積を入力">
                 <button class="remove-area-btn">削除</button>
             </div>
+            <div class="area-total">
+        　　　合計面積: <span id="totalArea1">0</span> m²
+   　　　　 </div>
         </div>
         <button class="add-area-btn" onclick="addAreaInput(1)">面積を追加</button>
         <button id="calculateBtn1" class="calculate-btn">計算する</button>
@@ -153,6 +170,9 @@
             <div class="area-input-group">
                 <input type="number" class="area-input" placeholder="面積を入力">
                 <button class="remove-area-btn">削除</button>
+            <div class="area-total">
+        　　　合計面積: <span id="totalArea2">0</span> m²
+   　　　　 </div>
             </div>
         </div>
         <button class="add-area-btn" onclick="addAreaInput(2)">面積を追加</button>
