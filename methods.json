@@ -144,5 +144,46 @@
         "capacity": 20,
         "usagePerSqM": 1}
         }
+    },
+    "sd-az15tj": {
+        "name": "タフガイSD-AZ15TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-az立上り15tj": {
+        "name": "タフガイSD-AZ立上り15TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-az13tj": {
+        "name": "タフガイNK-AZ13TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+      },
+    "nk-az立上り13tj": {
+        "name": "タフガイNK-AZ立上り13TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
     }
 }
+
