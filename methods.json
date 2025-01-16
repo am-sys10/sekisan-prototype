@@ -98,5 +98,29 @@
             "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
             "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
         }
-     }
+     },
+    "qv-kk50t": {
+    "name": "サラセーヌQV-KK50T(フッ素)",
+    "manufacturer": "AGCポリマー建材",
+    "materials": {
+      "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+      "サラセーヌK": { "usagePerSqM": 3.3, "capacity": 24, "usageFactor": 1 },
+      "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+      "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+      "QVシート":{ "isAreaBased": true,
+                "capacitySqM": 15,
+                "usageFactor": 1.06},
+      "ジョイントテープ":{
+        "type": "tape2",
+        "rollLength": 50,
+        "capacity": 50,
+        "usagePerSqM": 1},
+      "MBテープ": {
+        "type": "tape1",
+        "rollLength": 20,
+        "capacity": 20,
+        "usagePerSqM": 1}
+        }
+    }
 }
+
