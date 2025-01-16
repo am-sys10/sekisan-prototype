@@ -276,8 +276,9 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${materialName}</td>
-                    <td>${requiredCansDecimal}</td> <!-- 実数を左側に表示 -->
-                    <td>${Math.floor(requiredAmount)}</td> <!-- 整数を右側に表示 -->
+                    <td>${requiredCansDecimal}</td> <!-- 必要量 -->
+                    <td>${Math.floor(requiredAmount)}</td> <!-- 実数値 -->
+                    <td>${requiredCans}</td> <!-- 整数表示 -->
                 `;
                 table.appendChild(row);
             });
