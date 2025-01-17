@@ -127,6 +127,12 @@
             </select>
         </div>
         <div>
+    　　　　<label for="category1">工法中分類:</label>
+    　　　　<select id="category1">
+        　　<option value="">選択してください</option>
+    　　　　</select>　
+　　　　</div>
+        <div>
             <label for="method1">工法:</label>
             <select id="method1">
                 <option value="">選択してください</option>
@@ -192,33 +198,69 @@
         });
 
     // メーカーと工法の初期化
-    const initManufacturers = () => {
-        [1, 2].forEach(num => {
-            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
-            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
-            manufacturers.forEach(manufacturer => {
+const initManufacturers = () => {
+    [1, 2].forEach(num => {
+        const manufacturerSelect = document.getElementById(`manufacturer${num}`);
+        const categorySelect = document.getElementById(`category${num}`);
+        const methodSelect = document.getElementById(`method${num}`);
+
+        // メーカーの一覧を取得して表示
+        const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
+        manufacturers.forEach(manufacturer => {
+            const option = document.createElement('option');
+            option.value = manufacturer;
+            option.textContent = manufacturer;
+            manufacturerSelect.appendChild(option);
+        });
+
+        // メーカーが選択されたとき
+        manufacturerSelect.addEventListener('change', () => {
+            const selectedManufacturer = manufacturerSelect.value;
+
+            // 中分類をクリアして再表示
+            categorySelect.innerHTML = '<option value="">選択してください</option>';
+            methodSelect.innerHTML = '<option value="">選択してください</option>';
+
+            if (!selectedManufacturer) return;
+
+            // 選択されたメーカーに該当する中分類を取得
+            const categories = [...new Set(
+                Object.values(methods)
+                    .filter(method => method.manufacturer === selectedManufacturer)
+                    .map(method => method.category)
+            )];
+
+            // 中分類を追加
+            categories.forEach(category => {
                 const option = document.createElement('option');
-                option.value = manufacturer;
-                option.textContent = manufacturer;
-                manufacturerSelect.appendChild(option);
-            });
-
-            manufacturerSelect.addEventListener('change', () => {
-                const methodSelect = document.getElementById(`method${num}`);
-                methodSelect.innerHTML = '<option value="">選択してください</option>';
-                const selectedManufacturer = manufacturerSelect.value;
-
-                Object.entries(methods).forEach(([key, method]) => {
-                    if (method.manufacturer === selectedManufacturer) {
-                        const option = document.createElement('option');
-                        option.value = key;
-                        option.textContent = method.name;
-                        methodSelect.appendChild(option);
-                    }
-                });
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
             });
         });
-    };
+
+        // 中分類が選択されたとき
+        categorySelect.addEventListener('change', () => {
+            const selectedManufacturer = manufacturerSelect.value;
+            const selectedCategory = categorySelect.value;
+
+            // 工法をクリアして再表示
+            methodSelect.innerHTML = '<option value="">選択してください</option>';
+
+            if (!selectedCategory) return;
+
+            // 選択されたメーカーと中分類に該当する工法を取得
+            Object.entries(methods).forEach(([key, method]) => {
+                if (method.manufacturer === selectedManufacturer && method.category === selectedCategory) {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = method.name;
+                    methodSelect.appendChild(option);
+                }
+            });
+        });
+    });
+};
 
    // 面積合計を更新する関数
     function updateAreaTotal(num) {
