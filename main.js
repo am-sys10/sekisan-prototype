@@ -20,11 +20,19 @@ class MaterialCalculator {
     }
 
     setupAllCalculationBoxes() {
-        // 既存の工法ボックスのセットアップ
         this.setupRegularMethodBoxes();
-        // シーリング工法ボックスのセットアップ
         this.setupSealingBoxes();
         this.setupExcelExport();
+    }
+
+    setupRegularMethodBoxes() {
+        const template = document.getElementById('method-box-template');
+        [1, 2].forEach(num => {
+            const clone = template.content.cloneNode(true);
+            clone.querySelector('h2').textContent = `工法${num}`;
+            const box = this.setupCalculationBox(clone, num);
+            document.querySelector('.container').appendChild(box);
+        });
     }
 
     setupSealingBoxes() {
@@ -36,16 +44,37 @@ class MaterialCalculator {
         });
     }
 
+    setupCalculationBox(boxElement, num) {
+        const manufacturerSelect = boxElement.querySelector('.manufacturer-select');
+        const methodSelect = boxElement.querySelector('.method-select');
+        
+        const manufacturers = [...new Set(Object.values(this.methods)
+            .map(method => method.manufacturer))];
+        
+        this.populateSelect(manufacturerSelect, manufacturers);
+        
+        manufacturerSelect.addEventListener('change', () => 
+            this.updateMethodList(manufacturerSelect, methodSelect));
+            
+        boxElement.querySelector('.add-area-btn')
+            .addEventListener('click', () => this.addAreaInput(boxElement));
+            
+        boxElement.querySelector('.calculate-btn')
+            .addEventListener('click', () => this.calculate(boxElement));
+
+        this.setupAreaInputs(boxElement);
+        
+        return boxElement;
+    }
+
     setupSealingBox(boxElement, type) {
         const manufacturerSelect = boxElement.querySelector('.manufacturer-select');
         const materialSelect = boxElement.querySelector('.material-select');
         
-        // メーカーリストの設定
         const manufacturers = [...new Set(Object.values(this.sealingMaterials)
             .map(material => material.manufacturer))];
         this.populateSelect(manufacturerSelect, manufacturers);
 
-        // イベントリスナーの設定
         manufacturerSelect.addEventListener('change', () => 
             this.updateSealingMaterialList(manufacturerSelect, materialSelect));
         
@@ -53,24 +82,64 @@ class MaterialCalculator {
             .addEventListener('click', () => this.calculateSealing(boxElement, type));
     }
 
+    setupAreaInputs(boxElement) {
+        const updateTotal = () => {
+            const inputs = boxElement.querySelectorAll('.area-input');
+            const total = Array.from(inputs)
+                .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+            boxElement.querySelector('.area-total span').textContent = total.toFixed(2);
+        };
+
+        boxElement.querySelectorAll('.area-input').forEach(input => {
+            input.addEventListener('input', updateTotal);
+        });
+
+        boxElement.querySelectorAll('.remove-area-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const group = e.target.closest('.area-input-group');
+                if (boxElement.querySelectorAll('.area-input-group').length > 1) {
+                    group.remove();
+                    updateTotal();
+                }
+            });
+        });
+    }
+
+    addAreaInput(boxElement) {
+        const container = boxElement.querySelector('.areas-container');
+        const newGroup = document.createElement('div');
+        newGroup.className = 'area-input-group';
+        newGroup.innerHTML = `
+            <input type="number" class="area-input" placeholder="面積を入力">
+            <button class="remove-area-btn">削除</button>
+        `;
+
+        const totalElement = container.querySelector('.area-total');
+        container.insertBefore(newGroup, totalElement);
+        this.setupAreaInputs(boxElement);
+    }
+
     calculateSealing(boxElement, type) {
         const materialKey = boxElement.querySelector('.material-select').value;
         const materialData = this.sealingMaterials[materialKey];
         const useHalf = boxElement.querySelector('.half-calc').checked;
         
+        if (!materialKey || !materialData) {
+            alert('材料を選択してください');
+            return;
+        }
+
         let volume;
         if (type === '1') {
-            // 工法1の計算: 巾×深さ×長さ÷1000
-            const width = parseFloat(boxElement.querySelector('.width-input').value);
-            const depth = parseFloat(boxElement.querySelector('.depth-input').value);
-            const length = parseFloat(boxElement.querySelector('.length-input').value);
+            const width = parseFloat(boxElement.querySelector('.width-input').value) || 0;
+            const depth = parseFloat(boxElement.querySelector('.depth-input').value) || 0;
+            const length = parseFloat(boxElement.querySelector('.length-input').value) || 0;
             volume = (width * depth * length) / 1000;
         } else {
-            // 工法2の計算: 巾×深さ×直径×箇所数÷1000
-            const width = parseFloat(boxElement.querySelector('.width-input').value);
-            const depth = parseFloat(boxElement.querySelector('.depth-input').value);
-            const diameter = parseFloat(boxElement.querySelector('.diameter-input').value);
-            const count = parseFloat(boxElement.querySelector('.count-input').value);
+            const width = parseFloat(boxElement.querySelector('.width-input').value) || 0;
+            const depth = parseFloat(boxElement.querySelector('.depth-input').value) || 0;
+            const diameter = parseFloat(boxElement.querySelector('.diameter-input').value) || 0;
+            const count = parseFloat(boxElement.querySelector('.count-input').value) || 0;
             volume = (width * depth * diameter * count) / 1000;
         }
 
@@ -87,6 +156,19 @@ class MaterialCalculator {
             requiredCans,
             materialData
         });
+    }
+
+    calculate(boxElement) {
+        const methodKey = boxElement.querySelector('.method-select').value;
+        const methodData = this.methods[methodKey];
+        const totalArea = parseFloat(boxElement.querySelector('.area-total span').textContent);
+
+        if (!methodKey || !methodData || totalArea <= 0) {
+            alert('正しい入力値を選択してください');
+            return;
+        }
+
+        this.displayResult(boxElement, methodData, totalArea);
     }
 
     displaySealingResult(boxElement, results) {
@@ -122,97 +204,127 @@ class MaterialCalculator {
         resultDiv.innerHTML = '';
         resultDiv.appendChild(table);
     }
-class MaterialCalculator {
-    constructor() {
-        this.methods = {};
-        this.init();
-    }
 
-    async init() {
-        try {
-            const response = await fetch('methods.json');
-            this.methods = await response.json();
-            this.setupCalculationBoxes();
-        } catch (error) {
-            console.error('データの読み込みに失敗:', error);
-        }
-    }
+    displayResult(boxElement, methodData, totalArea) {
+        const resultDiv = boxElement.querySelector('.result');
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <tr>
+                <th>材料名</th>
+                <th>必要使用量</th>
+                <th>積算面積</th>
+                <th>必要量</th>
+                <th>実数</th>
+                <th>整数</th>
+                <th>単価</th>
+                <th>金額</th>
+            </tr>
+        `;
 
-    setupCalculationBoxes() {
-        const template = document.getElementById('method-box-template');
-        [1, 2].forEach(num => {
-            const clone = template.content.cloneNode(true);
-            clone.querySelector('h2').textContent = `工法${num}`;
-            
-            const box = this.setupCalculationBox(clone, num);
-            document.querySelector('.container').appendChild(box);
+        Object.entries(methodData.materials).forEach(([name, data]) => {
+            const row = this.createMaterialRow(name, data, totalArea);
+            table.appendChild(row);
         });
 
-        this.setupExcelExport();
-    }
+        const totalRow = document.createElement('tr');
+        totalRow.innerHTML = `
+            <td colspan="7" style="text-align: right; font-weight: bold;">合計:</td>
+            <td class="total">0</td>
+        `;
+        table.appendChild(totalRow);
 
-    setupCalculationBox(boxElement, num) {
-        const manufacturerSelect = boxElement.querySelector('.manufacturer-select');
-        const methodSelect = boxElement.querySelector('.method-select');
-        
-        // メーカーリストの設定
-        const manufacturers = [...new Set(Object.values(this.methods)
-            .map(method => method.manufacturer))];
-        
-        this.populateSelect(manufacturerSelect, manufacturers);
-        
-        // イベントリスナーの設定
-        manufacturerSelect.addEventListener('change', () => 
-            this.updateMethodList(manufacturerSelect, methodSelect));
-            
-        boxElement.querySelector('.add-area-btn')
-            .addEventListener('click', () => this.addAreaInput(boxElement));
-            
-        boxElement.querySelector('.calculate-btn')
-            .addEventListener('click', () => this.calculate(boxElement));
-
-        // 既存の面積入力欄の設定
-        this.setupAreaInputs(boxElement);
-        
-        return boxElement;
-    }
-
-    calculateMaterialRequirements(totalArea, materialData) {
-        let calculatedArea = totalArea;
-        let usagePerUnit = materialData.usagePerSqM || 1;
-
-        if (materialData.type === 'tape1') {
-            calculatedArea = Math.sqrt(totalArea) * 4;
-        } else if (materialData.type === 'tape2') {
-            calculatedArea = (totalArea / 10) * 9;
-        }
-
-        const requiredAmount = calculatedArea * usagePerUnit * (materialData.usageFactor || 1);
-        const capacity = materialData.capacity || materialData.capacitySqM;
-        const requiredCans = Math.ceil(requiredAmount / capacity);
-
-        return {
-            calculatedArea,
-            usagePerUnit,
-            requiredAmount,
-            requiredCans,
-            requiredCansDecimal: (requiredAmount / capacity).toFixed(2)
-        };
-    }
-
-    calculate(boxElement) {
-        const totalArea = this.getTotalArea(boxElement);
-        const methodData = this.methods[boxElement.querySelector('.method-select').value];
-
-        if (totalArea <= 0 || !methodData) return;
-
-        const table = this.createResultTable(totalArea, methodData);
-        const resultDiv = boxElement.querySelector('.result');
         resultDiv.innerHTML = '';
         resultDiv.appendChild(table);
     }
 
-    // その他の補助メソッド
+    createMaterialRow(materialName, materialData, totalArea) {
+        const row = document.createElement('tr');
+        const usage = this.calculateMaterialUsage(materialData, totalArea);
+
+        row.innerHTML = `
+            <td>${materialName}</td>
+            <td>${usage.usagePerUnit}</td>
+            <td>${usage.calculatedArea.toFixed(2)}</td>
+            <td>${Math.floor(usage.requiredAmount)}</td>
+            <td>${usage.requiredCansDecimal}</td>
+            <td>${usage.requiredCans}</td>
+            <td><input type="number" class="price-input" placeholder="単価"></td>
+            <td class="cost">0</td>
+        `;
+
+        const priceInput = row.querySelector('.price-input');
+        const costCell = row.querySelector('.cost');
+
+        priceInput.addEventListener('input', () => {
+            const price = parseFloat(priceInput.value) || 0;
+            const cost = price * usage.requiredCans;
+            costCell.textContent = cost.toLocaleString();
+            this.updateTotalCost(row.closest('table'));
+        });
+
+        return row;
+    }
+
+    calculateMaterialUsage(materialData, totalArea) {
+        let calculatedArea = totalArea;
+        let usagePerUnit = materialData.usagePerSqM || 1;
+        let requiredAmount;
+
+        if (materialData.type === 'tape1') {
+            calculatedArea = Math.sqrt(totalArea) * 4;
+            requiredAmount = calculatedArea;
+        } else if (materialData.type === 'tape2') {
+            calculatedArea = (totalArea / 10) * 9;
+            requiredAmount = calculatedArea;
+        } else {
+            requiredAmount = calculatedArea * usagePerUnit * (materialData.usageFactor || 1);
+        }
+
+        const capacity = materialData.capacity || materialData.capacitySqM;
+        return {
+            calculatedArea,
+            usagePerUnit,
+            requiredAmount,
+            requiredCans: Math.ceil(requiredAmount / capacity),
+            requiredCansDecimal: (requiredAmount / capacity).toFixed(2)
+        };
+    }
+
+    updateTotalCost(table) {
+        const costs = Array.from(table.querySelectorAll('.cost'))
+            .map(cell => parseInt(cell.textContent.replace(/,/g, '')) || 0);
+        const total = costs.reduce((sum, cost) => sum + cost, 0);
+        table.querySelector('.total').textContent = total.toLocaleString() + ' 円';
+    }
+
+    updateMethodList(manufacturerSelect, methodSelect) {
+        methodSelect.innerHTML = '<option value="">選択してください</option>';
+        const selectedManufacturer = manufacturerSelect.value;
+        
+        Object.entries(this.methods).forEach(([key, method]) => {
+            if (method.manufacturer === selectedManufacturer) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = method.name;
+                methodSelect.appendChild(option);
+            }
+        });
+    }
+
+    updateSealingMaterialList(manufacturerSelect, materialSelect) {
+        materialSelect.innerHTML = '<option value="">選択してください</option>';
+        const selectedManufacturer = manufacturerSelect.value;
+        
+        Object.entries(this.sealingMaterials).forEach(([key, material]) => {
+            if (material.manufacturer === selectedManufacturer) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = material.name;
+                materialSelect.appendChild(option);
+            }
+        });
+    }
+
     populateSelect(select, items) {
         select.innerHTML = '<option value="">選択してください</option>';
         items.forEach(item => {
@@ -230,7 +342,10 @@ class MaterialCalculator {
                 const table = box.querySelector('table');
                 if (table) {
                     const ws = XLSX.utils.table_to_sheet(table);
-                    XLSX.utils.book_append_sheet(workbook, ws, `工法${index + 1}`);
+                    const boxType = box.classList.contains('sealing-box') 
+                        ? 'シーリング工法' 
+                        : '工法';
+                    XLSX.utils.book_append_sheet(workbook, ws, `${boxType}${index + 1}`);
                 }
             });
             XLSX.writeFile(workbook, '見積もり.xlsx');
