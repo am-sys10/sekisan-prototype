@@ -1,1 +1,11 @@
-
+{
+    "MSシール": {
+        "name": "サラセーヌSD-KK20T(フッ素)",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
