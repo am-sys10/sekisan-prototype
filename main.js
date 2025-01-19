@@ -88,6 +88,9 @@ function setupRegularMethodBox(box, num) {
         calculateRegularMethod(box));
 
     setupAreaInputs(box);
+   
+    // 見積もりに追加ボタンの設定
+    setupAddToEstimateButton(box);
 }
 
 // シーリング工法ボックスのセットアップ
@@ -107,6 +110,9 @@ function setupSealingBox(box, num) {
     
     calculateBtn.addEventListener('click', () => 
         calculateSealing(box, num));
+
+    // 見積もりに追加ボタンの設定
+    setupAddToEstimateButton(box);
 }
 
 // セレクトボックスの選択肢を設定
