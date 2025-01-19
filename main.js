@@ -447,25 +447,63 @@ function updateTotalCost(table) {
     const totalCell = table.querySelector('tr:last-child td:last-child');
     totalCell.textContent = total.toLocaleString() + ' 円';
 }
-
-// Excelエクスポートの設定
-function setupExcelExport() {
-    document.getElementById('exportExcelBtn').addEventListener('click', () => {
-        const workbook = XLSX.utils.book_new();
-        
-        // 全ての計算ボックスの結果を取得
-        document.querySelectorAll('.calculation-box').forEach((box, index) => {
-            const table = box.querySelector('table');
-            if (table) {
-                const ws = XLSX.utils.table_to_sheet(table);
-                const sheetName = box.querySelector('h2').textContent;
-                XLSX.utils.book_append_sheet(workbook, ws, sheetName);
-            }
-        });
-
-        XLSX.writeFile(workbook, '見積もり.xlsx');
+// 見積もりに追加ボタンの処理
+function setupAddToEstimateButton(box) {
+    const addToEstimateBtn = box.querySelector('.add-to-estimate-btn');
+    addToEstimateBtn.addEventListener('click', () => {
+        addToEstimate(box);
     });
 }
+
+// 見積もりデータを保存する処理
+let estimateData = [];
+
+function addToEstimate(box) {
+    const resultDiv = box.querySelector('.result');
+    if (!resultDiv.innerHTML.trim()) {
+        alert("計算結果がありません。");
+        return;
+    }
+
+    const methodName = box.querySelector('h2').textContent;
+    const table = resultDiv.querySelector('table');
+    
+    const rowData = [];
+    table.querySelectorAll('tr').forEach((row, index) => {
+        if (index === 0) return; // ヘッダー行をスキップ
+        const cells = row.querySelectorAll('td');
+        const rowDataItem = Array.from(cells).map(cell => cell.textContent.trim());
+        rowData.push(rowDataItem);
+    });
+
+    estimateData.push({
+        methodName,
+        rows: rowData
+    });
+
+    alert("見積もりに追加しました。");
+    console.log(estimateData);  // 見積もりデータの確認
+}
+
+// 見積もりのエクスポート処理
+function exportEstimateToExcel() {
+    const workbook = XLSX.utils.book_new();
+    
+    estimateData.forEach((estimate, index) => {
+        const ws = XLSX.utils.aoa_to_sheet([["工法名", ...estimate.rows[0]]]);
+        estimate.rows.forEach(row => {
+            ws['!rows'] = ws['!rows'] || [];
+            ws['!rows'].push(row);
+        });
+        const sheetName = `見積もり ${index + 1}`;
+        XLSX.utils.book_append_sheet(workbook, ws, sheetName);
+    });
+    
+    XLSX.writeFile(workbook, '見積もり.xlsx');
+}
+
+// エクスポートボタンにイベントリスナーを設定
+document.getElementById('exportEstimateBtn').addEventListener('click', exportEstimateToExcel);
 
 // アプリケーションの初期化
 document.addEventListener('DOMContentLoaded', initializeApp);
