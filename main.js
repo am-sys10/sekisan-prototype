@@ -407,19 +407,33 @@ function createMaterialRow(materialName, usage) {
         <td class="cost">0</td>
     `;
 
+    // 価格入力のイベントリスナーを設定
+    const priceInput = row.querySelector('.price-input');
+    const costCell = row.querySelector('.cost');
+    
+    priceInput.addEventListener('input', (e) => {
+        const price = parseFloat(e.target.value) || 0;
+        const requiredCans = usage.requiredCans; // 整数値を使用
+        const cost = requiredCans * price;
+        costCell.textContent = cost.toLocaleString();
+        updateTotalCost(row.closest('table'));
+    });
+
     return row;
 }
 
-// 価格入力の設定
+// 価格入力の設定（シーリング工法用）
 function setupPriceInput(table) {
     table.querySelectorAll('.price-input').forEach(input => {
         input.addEventListener('input', (e) => {
             const row = e.target.closest('tr');
+            const priceInput = parseFloat(e.target.value) || 0;
+            const requiredCans = parseInt(row.querySelector('td:nth-child(6)').textContent) || 0; // 整数列（6列目）を参照
             const costCell = row.querySelector('.cost, .total-price');
-            const requiredCans = parseFloat(row.querySelector('td:nth-child(4)')?.textContent) || 1;
-            const price = parseFloat(e.target.value) || 0;
             
-            costCell.textContent = (price * requiredCans).toLocaleString();
+            // 整数×単価で計算
+            const cost = requiredCans * priceInput;
+            costCell.textContent = cost.toLocaleString();
             updateTotalCost(table);
         });
     });
