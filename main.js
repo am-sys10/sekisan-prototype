@@ -1,3 +1,4 @@
+// グローバル変数の定義
 let methods = {};
 let sealingMaterials = {};
 
@@ -9,12 +10,21 @@ Promise.all([
 .then(([methodsData, sealingData]) => {
     methods = methodsData;
     sealingMaterials = sealingData;
-    initManufacturers();
-    initSealingManufacturers();
+    initAllCalculations();
 })
 .catch(error => console.error('データの読み込みに失敗:', error));
 
-// 既存の工法の初期化
+// すべての初期化を行う関数
+function initAllCalculations() {
+    initManufacturers(); // 通常工法の初期化
+    initSealingManufacturers(); // シーリング工法の初期化
+    initCalculationBox(1); // 計算ボックス1の初期化
+    initCalculationBox(2); // 計算ボックス2の初期化
+    setupInitialAreaTotals(); // 面積合計の初期表示
+    setupExcelExport(); // Excelエクスポートの設定
+}
+
+// 通常工法の初期化
 const initManufacturers = () => {
     [1, 2].forEach(num => {
         const manufacturerSelect = document.getElementById(`manufacturer${num}`);
@@ -79,12 +89,93 @@ const initSealingManufacturers = () => {
     });
 };
 
-// シーリング工法の計算関数
+// 面積合計を更新する関数
+function updateAreaTotal(num) {
+    const areasContainer = document.getElementById(`areas${num}`);
+    const areaInputs = areasContainer.querySelectorAll('.area-input');
+    const totalArea = Array.from(areaInputs)
+        .map(input => parseFloat(input.value) || 0)
+        .reduce((sum, area) => sum + area, 0);
+    
+    document.getElementById(`totalArea${num}`).textContent = totalArea.toFixed(2);
+}
+
+// 面積入力欄を追加する関数
+function addAreaInput(num) {
+    const areasContainer = document.getElementById(`areas${num}`);
+    const newGroup = document.createElement('div');
+    newGroup.className = 'area-input-group';
+    newGroup.innerHTML = `
+        <input type="number" class="area-input" placeholder="面積を入力" oninput="updateAreaTotal(${num})">
+        <button class="remove-area-btn">削除</button>
+    `;
+    
+    const totalDisplay = areasContainer.querySelector('.area-total');
+    areasContainer.insertBefore(newGroup, totalDisplay);
+
+    newGroup.querySelector('.remove-area-btn').addEventListener('click', () => {
+        areasContainer.removeChild(newGroup);
+        updateAreaTotal(num);
+    });
+}
+
+// 初期の面積合計表示の設定
+function setupInitialAreaTotals() {
+    // 既存の削除ボタンにイベントリスナーを追加
+    document.querySelectorAll('.remove-area-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const group = e.target.parentElement;
+            const areasContainer = group.parentElement;
+            const num = areasContainer.id.slice(-1);
+            
+            if (areasContainer.querySelectorAll('.area-input-group').length > 1) {
+                group.parentElement.removeChild(group);
+                updateAreaTotal(num);
+            }
+        });
+    });
+
+    // 既存の入力フィールドにイベントリスナーを追加
+    document.querySelectorAll('.area-input').forEach(input => {
+        const num = input.closest('.areas-container').id.slice(-1);
+        input.addEventListener('input', () => updateAreaTotal(num));
+    });
+
+    // 初期表示
+    updateAreaTotal(1);
+    updateAreaTotal(2);
+}
+
+// 計算ボックスの初期化
+function initCalculationBox(num) {
+    const calculateBtn = document.getElementById(`calculateBtn${num}`);
+    const resultDiv = document.getElementById(`result${num}`);
+
+    calculateBtn.addEventListener('click', () => {
+        const totalArea = parseFloat(document.getElementById(`totalArea${num}`).textContent);
+        const selectedMethodKey = document.getElementById(`method${num}`).value;
+        const methodData = methods[selectedMethodKey];
+
+        if (totalArea <= 0 || !methodData) {
+            resultDiv.textContent = '正しい入力値を選択してください。';
+            return;
+        }
+
+        displayMethodResult(resultDiv, methodData, totalArea);
+    });
+}
+
+// シーリング工法の計算
 function calculateSealing(num) {
     const box = document.querySelector(`#sealing-box-template-${num}`);
     const materialKey = box.querySelector('.material-select').value;
     const materialData = sealingMaterials[materialKey];
     const useHalf = box.querySelector('.half-calc').checked;
+    
+    if (!materialKey || !materialData) {
+        alert('材料を選択してください');
+        return;
+    }
     
     let volume;
     if (num === '1') {
@@ -115,7 +206,17 @@ function calculateSealing(num) {
     });
 }
 
-// シーリング計算結果の表示
+// 通常工法の結果表示
+function displayMethodResult(resultDiv, methodData, totalArea) {
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'table-container';
+    const table = createMethodResultTable(methodData, totalArea);
+    tableContainer.appendChild(table);
+    resultDiv.innerHTML = '';
+    resultDiv.appendChild(tableContainer);
+}
+
+// シーリング工法の結果表示
 function displaySealingResult(box, results) {
     const resultDiv = box.querySelector('.result');
     const table = document.createElement('table');
@@ -139,260 +240,128 @@ function displaySealingResult(box, results) {
         </tr>
     `;
 
-    const priceInput = table.querySelector('.price-input');
-    const totalCell = table.querySelector('.total-price');
-    
-    priceInput.addEventListener('input', (e) => {
-        const price = parseFloat(e.target.value) || 0;
-        totalCell.textContent = (price * results.requiredCans).toLocaleString() + ' 円';
-    });
-
+    setupPriceInput(table);
     resultDiv.innerHTML = '';
     resultDiv.appendChild(table);
 }
 
-//既存のコード
- let methods = {};
-
-    // JSON データを取得して初期化
-    fetch('methods.json')
-        .then(response => response.json())
-        .then(data => {
-            methods = data;
-            initManufacturers();
-        });
-
-    // メーカーと工法の初期化
-    const initManufacturers = () => {
-        [1, 2].forEach(num => {
-            const manufacturerSelect = document.getElementById(`manufacturer${num}`);
-            const manufacturers = [...new Set(Object.values(methods).map(method => method.manufacturer))];
-            manufacturers.forEach(manufacturer => {
-                const option = document.createElement('option');
-                option.value = manufacturer;
-                option.textContent = manufacturer;
-                manufacturerSelect.appendChild(option);
-            });
-
-            manufacturerSelect.addEventListener('change', () => {
-                const methodSelect = document.getElementById(`method${num}`);
-                methodSelect.innerHTML = '<option value="">選択してください</option>';
-                const selectedManufacturer = manufacturerSelect.value;
-
-                Object.entries(methods).forEach(([key, method]) => {
-                    if (method.manufacturer === selectedManufacturer) {
-                        const option = document.createElement('option');
-                        option.value = key;
-                        option.textContent = method.name;
-                        methodSelect.appendChild(option);
-                    }
-                });
-            });
-        });
-    };
-
-   // 面積合計を更新する関数
-    function updateAreaTotal(num) {
-        const areasContainer = document.getElementById(`areas${num}`);
-        const areaInputs = areasContainer.querySelectorAll('.area-input');
-        const totalArea = Array.from(areaInputs)
-            .map(input => parseFloat(input.value) || 0)
-            .reduce((sum, area) => sum + area, 0);
-        
-        document.getElementById(`totalArea${num}`).textContent = totalArea.toFixed(2);
-    }
-
-    // 面積入力欄を追加する関数（更新）
-    function addAreaInput(num) {
-        const areasContainer = document.getElementById(`areas${num}`);
-        const newGroup = document.createElement('div');
-        newGroup.className = 'area-input-group';
-        newGroup.innerHTML = `
-            <input type="number" class="area-input" placeholder="面積を入力" oninput="updateAreaTotal(${num})">
-            <button class="remove-area-btn">削除</button>
-        `;
-        
-        // 合計表示の前に新しい入力グループを挿入
-        const totalDisplay = areasContainer.querySelector('.area-total');
-        areasContainer.insertBefore(newGroup, totalDisplay);
-
-        // 削除ボタンのイベントリスナーを追加
-        newGroup.querySelector('.remove-area-btn').addEventListener('click', () => {
-            areasContainer.removeChild(newGroup);
-            updateAreaTotal(num); // 削除後に合計を更新
-        });
-    }
-
-    // 既存の削除ボタンにイベントリスナーを追加（更新）
-    document.querySelectorAll('.remove-area-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const group = e.target.parentElement;
-            const areasContainer = group.parentElement;
-            const num = areasContainer.id.slice(-1); // areas1 or areas2 から数字を取得
-            
-            if (areasContainer.querySelectorAll('.area-input-group').length > 1) {
-                group.parentElement.removeChild(group);
-                updateAreaTotal(num); // 削除後に合計を更新
-            }
-        });
-    });
-
-    // 既存の入力フィールドにもイベントリスナーを追加
-    document.querySelectorAll('.area-input').forEach(input => {
-        const num = input.closest('.areas-container').id.slice(-1);
-        input.addEventListener('input', () => updateAreaTotal(num));
-    });
-
-    // 初期化時に合計を表示
-    updateAreaTotal(1);
-    updateAreaTotal(2);
-
-    const initCalculationBox = (num) => {
-        const calculateBtn = document.getElementById(`calculateBtn${num}`);
-const resultDiv = document.getElementById(`result${num}`);
-
-calculateBtn.addEventListener('click', () => {
-    const areasContainer = document.getElementById(`areas${num}`);
-    const areaInputs = areasContainer.querySelectorAll('.area-input');
-    const totalArea = Array.from(areaInputs)
-        .map(input => parseFloat(input.value) || 0)
-        .reduce((sum, area) => sum + area, 0);
-
-    const selectedMethodKey = document.getElementById(`method${num}`).value;
-    const methodData = methods[selectedMethodKey];
-
-    if (totalArea <= 0 || !methodData) {
-        resultDiv.textContent = '正しい入力値を選択してください。';
-        return;
-    }
-
-    resultDiv.innerHTML = '<div class="table-container"></div>';
-    const tableContainer = resultDiv.querySelector('.table-container');
+// 結果テーブルの作成（通常工法用）
+function createMethodResultTable(methodData, totalArea) {
     const table = document.createElement('table');
-    const headerRow = document.createElement('tr');
-    headerRow.innerHTML = `
-        <th>材料名</th>
-        <th>必要使用量</th>
-        <th>積算面積</th>
-        <th>必要量</th>
-        <th>実数</th>
-        <th>整数</th>
-        <th>単価</th>
-        <th>金額</th>
+    table.innerHTML = `
+        <tr>
+            <th>材料名</th>
+            <th>必要使用量</th>
+            <th>積算面積</th>
+            <th>必要量</th>
+            <th>実数</th>
+            <th>整数</th>
+            <th>単価</th>
+            <th>金額</th>
+        </tr>
     `;
-    table.appendChild(headerRow);
 
-    let totalCost = 0;
     Object.entries(methodData.materials).forEach(([materialName, materialData]) => {
-        let requiredAmount = 0;
-        let requiredCans = 0;
-        let requiredCansDecimal = 0;
-        let usagePerUnit = 0;
-        let calculatedArea = totalArea;
-
-        // 必要使用量の計算
-        if (materialData.isAreaBased) {
-            usagePerUnit = 1;
-            requiredAmount = totalArea * (materialData.usageFactor || 1);
-            requiredCans = Math.ceil(requiredAmount / materialData.capacitySqM);
-            requiredCansDecimal = (requiredAmount / materialData.capacitySqM).toFixed(2);
-        } else if (materialData.type === 'tape1') {
-            usagePerUnit = materialData.usagePerSqM;
-            calculatedArea = Math.sqrt(totalArea) * 4;
-            requiredAmount = calculatedArea;
-            requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-            requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
-        } else if (materialData.type === 'tape2') {
-            usagePerUnit = materialData.usagePerSqM;
-            calculatedArea = (totalArea / 10) * 9;
-            requiredAmount = calculatedArea;
-            requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-            requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
-        } else {
-            usagePerUnit = materialData.usagePerSqM;
-            requiredAmount = totalArea * materialData.usagePerSqM * (materialData.usageFactor || 1);
-            requiredCans = Math.ceil(requiredAmount / materialData.capacity);
-            requiredCansDecimal = (requiredAmount / materialData.capacity).toFixed(2);
-        }
-
-        const row = document.createElement('tr');
-        const unitPriceInput = document.createElement('input');
-        unitPriceInput.type = 'number';
-        unitPriceInput.placeholder = '単価を入力';
-        const costCell = document.createElement('td');
-
-        unitPriceInput.addEventListener('input', () => {
-            const unitPrice = parseFloat(unitPriceInput.value) || 0;
-            const materialCost = requiredCans * unitPrice;
-            costCell.textContent = materialCost.toLocaleString();
-            updateTotalCost(table);
-        });
-
-        row.innerHTML = `
-            <td>${materialName}</td>
-            <td>${usagePerUnit}</td>
-            <td>${calculatedArea.toFixed(2)}</td>
-            <td>${Math.floor(requiredAmount)}</td>
-            <td>${requiredCansDecimal}</td>
-            <td>${requiredCans}</td>
-        `;
-        const priceCell = document.createElement('td');
-        priceCell.appendChild(unitPriceInput);
-        row.appendChild(priceCell);
-        row.appendChild(costCell);
+        const usage = calculateMaterialUsage(materialData, totalArea);
+        const row = createMaterialRow(materialName, usage);
         table.appendChild(row);
     });
 
     const totalRow = document.createElement('tr');
     totalRow.innerHTML = `
         <td colspan="7" style="text-align: right; font-weight: bold;">合計:</td>
-        <td id="totalCost${num}">0</td>
+        <td class="total">0</td>
     `;
     table.appendChild(totalRow);
-    tableContainer.appendChild(table);
-});
-    };
 
-    // 合計金額を更新する関数
-    function updateTotalCost(table) {
-        const rows = table.querySelectorAll('tr:not(:last-child)');
-        let total = 0;
-        rows.forEach(row => {
-            const costCell = row.lastElementChild;
-            if (costCell.textContent) {
-                total += parseInt(costCell.textContent.replace(/,/g, '')) || 0;
-            }
-        });
-        const totalCell = table.querySelector('tr:last-child td:last-child');
-        totalCell.textContent = total.toLocaleString() + ' 円';
+    return table;
+}
+
+// 材料使用量の計算
+function calculateMaterialUsage(materialData, totalArea) {
+    let calculatedArea = totalArea;
+    let usagePerUnit = materialData.usagePerSqM || 1;
+    let requiredAmount;
+
+    if (materialData.type === 'tape1') {
+        calculatedArea = Math.sqrt(totalArea) * 4;
+        requiredAmount = calculatedArea;
+    } else if (materialData.type === 'tape2') {
+        calculatedArea = (totalArea / 10) * 9;
+        requiredAmount = calculatedArea;
+    } else {
+        requiredAmount = calculatedArea * usagePerUnit * (materialData.usageFactor || 1);
     }
 
-    initCalculationBox(1);
-    initCalculationBox(2);
+    const capacity = materialData.capacity || materialData.capacitySqM;
+    return {
+        calculatedArea,
+        usagePerUnit,
+        requiredAmount,
+        requiredCans: Math.ceil(requiredAmount / capacity),
+        requiredCansDecimal: (requiredAmount / capacity).toFixed(2)
+    };
+}
 
-    //エクセルに出力
-document.getElementById('exportExcelBtn').addEventListener('click', () => {
-    const workbook = XLSX.utils.book_new();
-    
-    // 通常工法の結果を追加
-    [1, 2].forEach(num => {
-        const resultDiv = document.getElementById(`result${num}`);
-        const table = resultDiv.querySelector('table');
-        if (table) {
-            const ws = XLSX.utils.table_to_sheet(table);
-            XLSX.utils.book_append_sheet(workbook, ws, `工法${num}`);
-        }
+// 材料行の作成
+function createMaterialRow(materialName, usage) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${materialName}</td>
+        <td>${usage.usagePerUnit}</td>
+        <td>${usage.calculatedArea.toFixed(2)}</td>
+        <td>${Math.floor(usage.requiredAmount)}</td>
+        <td>${usage.requiredCansDecimal}</td>
+        <td>${usage.requiredCans}</td>
+        <td><input type="number" class="price-input" placeholder="単価"></td>
+        <td class="cost">0</td>
+    `;
+
+    setupPriceInput(row.closest('table'));
+    return row;
+}
+
+// 価格入力の設定
+function setupPriceInput(table) {
+    table.querySelectorAll('.price-input').forEach(input => {
+        input.addEventListener('input', () => updateTotalCost(table));
     });
+}
 
-    // シーリング工法の結果を追加
-    ['1', '2'].forEach(num => {
-        const box = document.querySelector(`#sealing-box-template-${num}`);
-        const table = box.querySelector('table');
-        if (table) {
-            const ws = XLSX.utils.table_to_sheet(table);
-            XLSX.utils.book_append_sheet(workbook, ws, `シーリング工法${num}`);
-        }
+// 合計金額の更新
+function updateTotalCost(table) {
+    const costs = Array.from(table.querySelectorAll('.cost'))
+        .map(cell => parseInt(cell.textContent.replace(/,/g, '')) || 0);
+    const total = costs.reduce((sum, cost) => sum + cost, 0);
+    const totalCell = table.querySelector('.total') || table.querySelector('.total-price');
+    totalCell.textContent = total.toLocaleString() + ' 円';
+}
+
+// Excelエクスポートの設定
+function setupExcelExport() {
+    document.getElementById('exportExcelBtn').addEventListener('click', () => {
+        const workbook = XLSX.utils.book_new();
+        
+        // 通常工法の結果を追加
+        [1, 2].forEach(num => {
+            const resultDiv = document.getElementById(`result${num}`);
+            const table = resultDiv.querySelector('table');
+            if (table) {
+                const ws = XLSX.utils.table_to_sheet(table);
+                XLSX.utils.book_append_sheet(workbook, ws, `工法${num}`);
+            }
+        });
+
+        // シーリング工法の結果を追加
+        ['1', '2'].forEach(num => {
+            const box = document.querySelector(`#sealing-box-template-${num}`);
+            const table = box.querySelector('table');
+            if (table) {
+                const ws = XLSX.utils.table_to_sheet(table);
+                XLSX.utils.book_append_sheet(workbook, ws, `シーリング工法${num}`);
+            }
+        });
+
+        XLSX.writeFile(workbook, '見積もり.xlsx');
     });
-
-    XLSX.writeFile(workbook, '見積もり.xlsx');
-});
+}
