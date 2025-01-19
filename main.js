@@ -283,34 +283,41 @@ function displayMethodResult(box, methodData, totalArea) {
 // シーリング工法の計算結果表示
 function displaySealingResult(box, results) {
     const resultDiv = box.querySelector('.result');
-    const table = document.createElement('table');
+    const tableContainer = document.createElement('div');
+    tableContainer.className = 'table-container';
     
+    const table = document.createElement('table');
     table.innerHTML = `
         <tr>
             <th>材料名</th>
-            <th>必要容量 (ml)</th>
-            <th>必要本数（実数）</th>
-            <th>必要本数（整数）</th>
+            <th>必要使用量</th>
+            <th>積算面積</th>
+            <th>必要量</th>
+            <th>実数</th>
+            <th>整数</th>
             <th>単価</th>
             <th>金額</th>
         </tr>
         <tr>
             <td>${results.materialData.name}</td>
+            <td>1</td>
+            <td>${results.volume.toFixed(2)}</td>
             <td>${results.volume.toFixed(2)}</td>
             <td>${results.requiredAmount.toFixed(2)}</td>
             <td>${results.requiredCans}</td>
             <td><input type="number" class="price-input" placeholder="単価"></td>
-            <td class="total-price">0</td>
+            <td class="cost">0</td>
         </tr>
         <tr>
-            <td colspan="5" style="text-align: right; font-weight: bold;">合計:</td>
+            <td colspan="7" style="text-align: right; font-weight: bold;">合計:</td>
             <td class="total">0</td>
         </tr>
     `;
 
     setupPriceInput(table);
     resultDiv.innerHTML = '';
-    resultDiv.appendChild(table);
+    tableContainer.appendChild(table);
+    resultDiv.appendChild(tableContainer);
 }
 
 // 通常工法の結果テーブル作成
