@@ -78,8 +78,24 @@ th, td {
     padding: 10px;
     border: 1px solid var(--border);
     text-align: right;
-    white-space: normal; /* nowrapから変更 */
-    word-break: break-all; /* break-wordから変更 */
+    white-space: nowrap; /* normalからnowrapに戻す */
+}
+
+/* 材料名のセルのみ左寄せにする */
+th:first-child,
+td:first-child {
+    text-align: left;
+    white-space: normal; /* 材料名のみ折り返し可能に */
+    min-width: 120px; /* 材料名の最小幅を設定 */
+}
+
+/* 入力フィールドの調整 */
+.price-input {
+    width: 90%;
+    min-width: 70px;
+    max-width: 100px;
+    padding: 4px;
+    box-sizing: border-box;
 }
 th {
     background: #f2f2f2;
