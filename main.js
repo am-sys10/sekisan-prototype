@@ -287,7 +287,10 @@ function displaySealingResult(box, results) {
     tableContainer.className = 'table-container';
     
     const table = document.createElement('table');
-    table.innerHTML = `
+    
+    // テーブルヘッダーを別途作成
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
         <tr>
             <th>材料名</th>
             <th>必要使用量</th>
@@ -298,21 +301,33 @@ function displaySealingResult(box, results) {
             <th>単価</th>
             <th>金額</th>
         </tr>
-        <tr>
-            <td>${results.materialData.name}</td>
-            <td>1</td>
-            <td>${results.volume.toFixed(2)}</td>
-            <td>${results.volume.toFixed(2)}</td>
-            <td>${results.requiredAmount.toFixed(2)}</td>
-            <td>${results.requiredCans}</td>
-            <td><input type="number" class="price-input" placeholder="単価"></td>
-            <td class="cost">0</td>
-        </tr>
-        <tr>
-            <td colspan="7" style="text-align: right; font-weight: bold;">合計:</td>
-            <td class="total">0</td>
-        </tr>
     `;
+    table.appendChild(thead);
+
+    // テーブルボディを作成
+    const tbody = document.createElement('tbody');
+    const dataRow = document.createElement('tr');
+    dataRow.innerHTML = `
+        <td>${results.materialData.name}</td>
+        <td>1</td>
+        <td>${results.volume.toFixed(2)}</td>
+        <td>${results.volume.toFixed(2)}</td>
+        <td>${results.requiredAmount.toFixed(2)}</td>
+        <td>${results.requiredCans}</td>
+        <td><input type="number" class="price-input" placeholder="単価"></td>
+        <td class="cost">0</td>
+    `;
+    tbody.appendChild(dataRow);
+
+    // 合計行を作成
+    const totalRow = document.createElement('tr');
+    totalRow.innerHTML = `
+        <td colspan="7" style="text-align: right; font-weight: bold;">合計:</td>
+        <td class="total">0</td>
+    `;
+    tbody.appendChild(totalRow);
+    
+    table.appendChild(tbody);
 
     setupPriceInput(table);
     resultDiv.innerHTML = '';
