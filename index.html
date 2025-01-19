@@ -1,395 +1,247 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-
-const WaterproofEstimate = () => {
-  // 材料データの状態
-  const [materials, setMaterials] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // フォームの状態管理
-  const [formData, setFormData] = useState({
-    materialType: '',
-    manufacturer: '',
-    methodType: '',
-    area: '',
-    width: '',
-    depth: '',
-    length: '',
-    diameter: '',
-    count: '',
-    sealingType: 'normal'
-  });
-
-  // 計算結果の状態
-  const [results, setResults] = useState(null);
-
-  // 材料データの読み込み
-  useEffect(() => {
-    const loadMaterials = async () => {
-      try {
-        const response = await window.fs.readFile('methods.json', { encoding: 'utf8' });
-        const data = JSON.parse(response);
-        setMaterials(data);
-        setFormData(prev => ({
-          ...prev,
-          materialType: Object.keys(data)[0]
-        }));
-        setLoading(false);
-      } catch (err) {
-        console.error('材料データの読み込みに失敗しました:', err);
-        setError('材料データの読み込みに失敗しました');
-        setLoading(false);
-      }
-    };
-
-    loadMaterials();
-  }, []);
-
-  if (loading) {
-    return (
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="p-4">
-          <p>データを読み込み中...</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="p-4">
-          <p className="text-red-600">{error}</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // 材料タイプ変更時のハンドラー
-  const handleMaterialTypeChange = (e) => {
-    const newMaterialType = e.target.value;
-    setFormData({
-      ...formData,
-      materialType: newMaterialType,
-      manufacturer: '',
-      methodType: '',
-      area: ''
-    });
-    setResults(null);
-  };
-
-  // メーカー変更時のハンドラー
-  const handleManufacturerChange = (e) => {
-    const newManufacturer = e.target.value;
-    setFormData({
-      ...formData,
-      manufacturer: newManufacturer,
-      methodType: '',
-      area: ''
-    });
-    setResults(null);
-  };
-
-  // その他のフォーム変更ハンドラー
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // 材料計算
-  const calculateMaterials = () => {
-    const material = materials[formData.materialType];
-
-    if (formData.materialType === 'sealing') {
-      // シーリング材の計算
-      const method = material.methods[formData.sealingType];
-      let volume = 0;
-      
-      switch (formData.sealingType) {
-        case 'normal':
-        case 'triangle':
-          volume = method.calcVolume(
-            parseFloat(formData.width),
-            parseFloat(formData.depth),
-            parseFloat(formData.length)
-          );
-          break;
-        case 'circle':
-        case 'circle_triangle':
-          volume = method.calcVolume(
-            parseFloat(formData.width),
-            parseFloat(formData.depth),
-            parseFloat(formData.diameter),
-            parseFloat(formData.count)
-          );
-          break;
-      }
-
-      setResults({
-        type: 'sealing',
-        volume: volume.toFixed(2),
-        unit: 'L'
-      });
-    } else {
-      // 防水材の計算
-      const area = parseFloat(formData.area);
-      if (!area || isNaN(area)) {
-        alert('面積を正しく入力してください');
-        return;
-      }
-
-      const method = material.manufacturers[formData.manufacturer].methods[formData.methodType];
-      const materialCalc = method.materials.map(item => {
-        let amount;
-        let requiredUnits;
-        
-        if (item.isAreaBased) {
-          // シートなど面積ベースの材料
-          amount = area * item.usageFactor;
-          requiredUnits = Math.ceil(amount / item.capacitySqM);
-        } else if (item.type === 'tape1' || item.type === 'tape2') {
-          // テープ類の計算
-          amount = area * item.usagePerSqM;
-          requiredUnits = Math.ceil(amount / item.rollLength);
-        } else {
-          // 液体材料の計算
-          amount = area * item.usagePerSqM * item.usageFactor;
-          requiredUnits = Math.ceil(amount / item.capacity);
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>材料計算ツール</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --success: #28a745;
+            --danger: #dc3545;
+            --border: #ddd;
+            --shadow: rgba(0, 0, 0, 0.1);
         }
 
-        return {
-          name: item.name,
-          amount: amount.toFixed(2),
-          unit: item.unit,
-          requiredUnits: requiredUnits,
-          capacity: item.type ? `${item.rollLength}m/巻` : `${item.capacity}${item.unit}/缶`
-        };
-      });
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
+        }
 
-      setResults({
-        type: 'waterproof',
-        materials: materialCalc
-      });
-    }
-  };
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
 
-  return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>防水材料計算</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* 工法選択 */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              工法選択
-            </label>
-            <select
-              name="materialType"
-              value={formData.materialType}
-              onChange={handleMaterialTypeChange}
-              className="w-full p-2 border rounded"
-            >
-              {Object.entries(materials).map(([key, value]) => (
-                <option key={key} value={key}>{value.name}</option>
-              ))}
-            </select>
-          </div>
+        .calculation-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 2px 5px var(--shadow);
+        }
 
-          {formData.materialType === 'sealing' ? (
-            // シーリング用フォーム
-            <>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  シール形状
-                </label>
-                <select
-                  name="sealingType"
-                  value={formData.sealingType}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                >
-                  {Object.entries(materials.sealing.methods).map(([key, value]) => (
-                    <option key={key} value={key}>{value.name}</option>
-                  ))}
-                </select>
-              </div>
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  シール幅 (mm)
-                </label>
-                <input
-                  type="number"
-                  name="width"
-                  value={formData.width}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                  min="0"
-                />
-              </div>
+        .add-area-btn { background: var(--success); }
+        .remove-area-btn { background: var(--danger); }
+        .calculate-btn { 
+            background: var(--primary);
+            padding: 8px 12px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  シール深さ (mm)
-                </label>
-                <input
-                  type="number"
-                  name="depth"
-                  value={formData.depth}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                  min="0"
-                />
-              </div>
+        .area-input-group {
+            display: flex;
+            gap: 10px;
+            margin: 5px 0;
+        }
 
-              {['normal', 'triangle'].includes(formData.sealingType) ? (
+        .area-input { width: 100px; }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid var(--border);
+            text-align: right;
+        }
+
+        th {
+            background: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+
+        .sealing-box .sealing-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .sealing-box .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sealing-box input[type="number"] {
+            width: 100%;
+            padding: 5px;
+        }
+
+        .sealing-box input[type="checkbox"] {
+            width: auto;
+            margin-top: 5px;
+        }
+
+        select, input {
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        label {
+            font-weight: 500;
+        }
+
+        .price-input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>材料計算ツール</h1>
+    <div class="container">
+        <!-- 通常工法テンプレート -->
+        <template id="method-box-template">
+            <div class="calculation-box">
+                <h2>工法{num}</h2>
                 <div>
-                  <label className="block text-sm font-medium mb-1">
-                    長さ (m)
-                  </label>
-                  <input
-                    type="number"
-                    name="length"
-                    value={formData.length}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    min="0"
-                  />
+                    <label>メーカー:</label>
+                    <select class="manufacturer-select">
+                        <option value="">選択してください</option>
+                    </select>
                 </div>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      直径 (mm)
-                    </label>
-                    <input
-                      type="number"
-                      name="diameter"
-                      value={formData.diameter}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
-                      min="0"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      箇所数
-                    </label>
-                    <input
-                      type="number"
-                      name="count"
-                      value={formData.count}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
-                      min="0"
-                    />
-                  </div>
-                </>
-              )}
-            </>
-          ) : (
-            // 防水材料用フォーム
-            <>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  メーカー
-                </label>
-                <select
-                  name="manufacturer"
-                  value={formData.manufacturer}
-                  onChange={handleManufacturerChange}
-                  className="w-full p-2 border rounded"
-                >
-                  <option value="">選択してください</option>
-                  {Object.entries(materials[formData.materialType].manufacturers || {}).map(([key, value]) => (
-                    <option key={key} value={key}>{value.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {formData.manufacturer && (
                 <div>
-                  <label className="block text-sm font-medium mb-1">
-                    工法詳細
-                  </label>
-                  <select
-                    name="methodType"
-                    value={formData.methodType}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                  >
-                    <option value="">選択してください</option>
-                    {Object.entries(materials[formData.materialType].manufacturers[formData.manufacturer].methods || {}).map(([key, value]) => (
-                      <option key={key} value={key}>{value.name}</option>
-                    ))}
-                  </select>
+                    <label>工法:</label>
+                    <select class="method-select">
+                        <option value="">選択してください</option>
+                    </select>
                 </div>
-              )}
-
-              {formData.methodType && (
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    施工面積 (㎡)
-                  </label>
-                  <input
-                    type="number"
-                    name="area"
-                    value={formData.area}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    min="0"
-                    step="0.1"
-                  />
-                </div>
-              )}
-            </>
-          )}
-
-          <button
-            onClick={calculateMaterials}
-            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
-          >
-            材料計算
-          </button>
-
-          {results && (
-            <div className="mt-4 p-4 border rounded">
-              <h3 className="font-bold mb-2">必要材料</h3>
-              {results.type === 'sealing' ? (
-                <p>必要シーリング材量: {results.volume} {results.unit}</p>
-              ) : (
-                <div className="space-y-2">
-                  {formData.manufacturer && formData.methodType && (
-                    <>
-                      <p className="font-medium">
-                        {materials[formData.materialType].manufacturers[formData.manufacturer].methods[formData.methodType].name}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {materials[formData.materialType].manufacturers[formData.manufacturer].name}
-                      </p>
-                    </>
-                  )}
-                  {results.materials.map((item, index) => (
-                    <div key={index} className="border-b pb-2">
-                      <p className="font-medium">{item.name}</p>
-                      <p>必要量: {item.amount} {item.unit}</p>
-                      <p>必要数: {item.requiredUnits}個 （{item.capacity}）</p>
+                <div class="areas-container">
+                    <label>面積 (平米):</label>
+                    <div class="area-input-group">
+                        <input type="number" class="area-input" placeholder="面積を入力">
+                        <button class="remove-area-btn">削除</button>
                     </div>
-                  ))}
+                    <div class="area-total">合計面積: <span>0</span> m²</div>
                 </div>
-              )}
+                <button class="add-area-btn">面積を追加</button>
+                <button class="calculate-btn">計算する</button>
+                <div class="result"></div>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+        </template>
 
-export default WaterproofEstimate;
+        <!-- シーリング工法1テンプレート -->
+        <template id="sealing-box-template-1">
+            <div class="calculation-box sealing-box">
+                <h2>シーリング工法1</h2>
+                <div>
+                    <label>メーカー:</label>
+                    <select class="manufacturer-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div>
+                    <label>材料:</label>
+                    <select class="material-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="sealing-inputs">
+                    <div class="input-group">
+                        <label>巾 (mm):</label>
+                        <input type="number" class="width-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>深さ (mm):</label>
+                        <input type="number" class="depth-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>長さ (m):</label>
+                        <input type="number" class="length-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>1/2で計算:</label>
+                        <input type="checkbox" class="half-calc">
+                    </div>
+                </div>
+                <button class="calculate-btn">計算する</button>
+                <div class="result"></div>
+            </div>
+        </template>
+
+        <!-- シーリング工法2テンプレート -->
+        <template id="sealing-box-template-2">
+            <div class="calculation-box sealing-box">
+                <h2>シーリング工法2</h2>
+                <div>
+                    <label>メーカー:</label>
+                    <select class="manufacturer-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div>
+                    <label>材料:</label>
+                    <select class="material-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="sealing-inputs">
+                    <div class="input-group">
+                        <label>巾 (mm):</label>
+                        <input type="number" class="width-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>深さ (mm):</label>
+                        <input type="number" class="depth-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>直径 (mm):</label>
+                        <input type="number" class="diameter-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>箇所数:</label>
+                        <input type="number" class="count-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>1/2で計算:</label>
+                        <input type="checkbox" class="half-calc">
+                    </div>
+                </div>
+                <button class="calculate-btn">計算する</button>
+                <div class="result"></div>
+            </div>
+        </template>
+    </div>
+    <button id="exportExcelBtn" class="calculate-btn">見積もりをエクスポート</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
