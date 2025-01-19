@@ -70,7 +70,6 @@ body {
 }
 
 table {
-    min-width: 1200px;
     width: 100%;
     border-collapse: collapse;
 }
@@ -79,10 +78,9 @@ th, td {
     padding: 10px;
     border: 1px solid var(--border);
     text-align: right;
-    white-space: normal;
-    word-break: break-word;
+    white-space: normal; /* nowrapから変更 */
+    word-break: break-all; /* break-wordから変更 */
 }
-
 th {
     background: #f2f2f2;
     position: sticky;
