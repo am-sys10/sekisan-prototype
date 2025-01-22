@@ -1,14 +1,20 @@
 {
-  "material1": {
-    "name": "シーリング材A",
-    "manufacturer": "メーカー1",
-    "capacity": 320,
+  "MSシール": {
+    "name": "MSシール",
+    "manufacturer": "コニシ",
+    "capacity": 4000,
     "unit": "ml"
   },
-  "material2": {
-    "name": "シーリング材B",
-    "manufacturer": "メーカー2",
-    "capacity": 333,
+  "ビューシール6909": {
+    "name": "ビューシール6909",
+    "manufacturer": "コニシ",
+    "capacity": 6000,
+    "unit": "ml"
+  },
+  "ペンギン2550NB": {
+    "name": "ペンギン2550NB",
+    "manufacturer": "サンスター",
+    "capacity": 4000,
     "unit": "ml"
   }
 }
