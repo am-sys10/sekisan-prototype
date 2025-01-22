@@ -252,7 +252,9 @@ function calculateSealing(box, type) {
         volume /= 2;
     }
 
-    const requiredAmount = volume / materialData.capacity;
+// Convert capacity from ml to liters
+    const capacityInLiters = materialData.capacity / 1000;
+    const requiredAmount = volume / capacityInLiters;
     const requiredCans = Math.ceil(requiredAmount);
 
     displaySealingResult(box, {
