@@ -296,10 +296,10 @@ function displaySealingResult(box, results) {
         <tr>
             <th>材料名</th>
             <th>必要使用量</th>
-            <th>積算面積</th>
+            <th>積算体積</th>
             <th>必要量</th>
-            <th>実数</th>
-            <th>整数</th>
+            <th>積算数量</th>
+            <th>搬入数量</th>
             <th>単価</th>
             <th>金額</th>
         </tr>
@@ -346,8 +346,8 @@ function createMethodResultTable(methodData, totalArea) {
             <th>必要使用量</th>
             <th>積算面積</th>
             <th>必要量</th>
-            <th>実数</th>
-            <th>整数</th>
+            <th>積算数量</th>
+            <th>搬入数量</th>
             <th>単価</th>
             <th>金額</th>
         </tr>
