@@ -34,34 +34,39 @@ function initAllCalculations() {
         document.querySelector('.container').appendChild(box);
     });
 
-    // シーリング工法ボックスの作成
-    ['1', '2'].forEach(num => {
-        const template = document.getElementById('sealing-box-template');
-        const clone = template.content.cloneNode(true);
-        const box = clone.querySelector('.calculation-box');
-        
-        // テンプレート内の番号を置換
-        box.querySelector('h2').textContent = `シーリング工法${num}`;
-        
-        // タイプ固有の入力フィールドを追加
-        const typeSpecificDiv = box.querySelector('.type-specific');
-        if (num === '1') {
-            typeSpecificDiv.innerHTML = `
-                <label>長さ (m):</label>
-                <input type="number" class="length-input" min="0">
-            `;
-        } else {
-            typeSpecificDiv.innerHTML = `
-                <label>直径 (mm):</label>
-                <input type="number" class="diameter-input" min="0">
-                <label>箇所数:</label>
-                <input type="number" class="count-input" min="0">
-            `;
-        }
+// シーリング工法ボックスの作成
+['1', '2'].forEach(num => {
+    const template = document.getElementById('sealing-box-template');
+    const clone = template.content.cloneNode(true);
+    const box = clone.querySelector('.calculation-box');
+    
+    // テンプレート内の番号を置換
+    if (num === '1') {
+        box.querySelector('h2').textContent = 'シーリング工法';
+    } else if (num === '2') {
+        box.querySelector('h2').textContent = 'シーリング工法（ガラリ用）';
+    }
+    
+    // タイプ固有の入力フィールドを追加
+    const typeSpecificDiv = box.querySelector('.type-specific');
+    if (num === '1') {
+        typeSpecificDiv.innerHTML = `
+            <label>長さ (m):</label>
+            <input type="number" class="length-input" min="0">
+        `;
+    } else {
+        typeSpecificDiv.innerHTML = `
+            <label>直径 (mm):</label>
+            <input type="number" class="diameter-input" min="0">
+            <label>箇所数:</label>
+            <input type="number" class="count-input" min="0">
+        `;
+    }
 
-        setupSealingBox(box, num);
-        document.querySelector('.container').appendChild(box);
-    });
+    setupSealingBox(box, num);
+    document.querySelector('.container').appendChild(box);
+});
+
 
     setupExcelExport();
 }
