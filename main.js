@@ -236,7 +236,7 @@ function calculateSealing(box, type) {
     let volume;
     if (type === '1') {
         const length = parseFloat(box.querySelector('.length-input').value) || 0;
-        volume = (width * depth * length) / 1000;
+        volume = (width * depth * length) / 10000000000;
     } else {
         const diameter = parseFloat(box.querySelector('.diameter-input').value) || 0;
         const count = parseFloat(box.querySelector('.count-input').value) || 0;
