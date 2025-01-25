@@ -1,14 +1,98 @@
 {
+  "ビルドシールSR": {
+    "name": "ビルドシールSR",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "SAシール": {
+    "name": "SAシール",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
   "MSシール": {
     "name": "MSシール",
-    "manufacturer": "コニシ",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "MSシール超耐久": {
+    "name": "MSシール超耐久",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "サイディングシール": {
+    "name": "サイディングシール",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "FRシール": {
+    "name": "FRシール",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "PSシール": {
+    "name": "PSシール",
+    "manufacturer": "コニシ2液",
+    "capacity": 4000,
+    "unit": "ml"
+  },
+  "AUシール": {
+    "name": "AUシール",
+    "manufacturer": "コニシ2液",
     "capacity": 4000,
     "unit": "ml"
   },
   "ビューシール6909": {
     "name": "ビューシール6909",
-    "manufacturer": "コニシ",
+    "manufacturer": "コニシ2液",
     "capacity": 6000,
+    "unit": "ml"
+  },
+  "シリコンコーク": {
+    "name": "シリコンコーク",
+    "manufacturer": "コニシ1液",
+    "capacity": 330,
+    "unit": "ml"
+  },
+   "MSコーク": {
+    "name": "MSコーク",
+    "manufacturer": "コニシ1液",
+    "capacity": 330,
+    "unit": "ml"
+  },
+   "SRシールS70": {
+    "name": "SRシールS70",
+    "manufacturer": "コニシ1液",
+    "capacity": 320,
+    "unit": "ml"
+  },
+   "耐火目地用シーラント": {
+    "name": "耐火目地用シーラント",
+    "manufacturer": "コニシ1液",
+    "capacity": 333,
+    "unit": "ml"
+  },
+   "AUクイック": {
+    "name": "AUクイック",
+    "manufacturer": "コニシ1液",
+    "capacity": 333,
+    "unit": "ml"
+  },
+   "ウレタンコーク": {
+    "name": "ウレタンコーク",
+    "manufacturer": "コニシ1液",
+    "capacity": 320,
+    "unit": "ml"
+  },
+   "防火下地コーク": {
+    "name": "防火下地コーク",
+    "manufacturer": "コニシ1液",
+    "capacity": 320,
     "unit": "ml"
   },
   "ペンギン2550NB": {
