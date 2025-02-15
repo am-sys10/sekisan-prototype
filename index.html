@@ -5,161 +5,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>材料計算ツール</title>
     <style>
-        :root {
-    --primary: #007bff;
-    --success: #28a745;
-    --danger: #dc3545;
-    --border: #ddd;
-    --shadow: rgba(0, 0, 0, 0.1);
+       :root {
+  --primary: #007bff;
+  --success: #28a745;
+  --danger: #dc3545;
+  --border: #ccc;
+  --bg: #fdfdfd;
+  --text: #333;
+  --shadow: rgba(0, 0, 0, 0.1);
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f9f9f9;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .calculation-box {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 2px 5px var(--shadow);
+  background: #fff;
+  border-radius: 6px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
-.btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-}
-
-.add-area-btn { background: var(--success); }
-.remove-area-btn { background: var(--danger); }
-.calculate-btn { 
-    background: var(--primary);
-    padding: 8px 12px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.area-input-group {
-    display: flex;
-    gap: 10px;
-    margin: 5px 0;
-}
-
-.area-input { width: 100px; }
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 15px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid var(--border);
-    text-align: right;
-    white-space: nowrap; /* normalからnowrapに戻す */
-}
-
-/* 材料名のセルのみ左寄せにする */
-th:first-child,
-td:first-child {
-    text-align: left;
-    white-space: normal; /* 材料名のみ折り返し可能に */
-    min-width: 120px; /* 材料名の最小幅を設定 */
-}
-
-/* 入力フィールドの調整 */
-.price-input {
-    width: 90%;
-    min-width: 70px;
-    max-width: 100px;
-    padding: 4px;
-    box-sizing: border-box;
-}
-th {
-    background: #f2f2f2;
-    position: sticky;
-    top: 0;
-}
-
-/* 材料名のセルのみ左寄せにする */
-th:first-child,
-td:first-child {
-    text-align: left;
-}
-
-.sealing-box .sealing-inputs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.sealing-box .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.sealing-box input[type="number"] {
-    width: 100%;
-    padding: 5px;
-}
-
-.sealing-box input[type="checkbox"] {
-    width: auto;
-    margin-top: 5px;
-}
-
-select, input {
-    padding: 5px;
-    margin: 5px 0;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+h1, h2 {
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 label {
-    font-weight: 500;
+  font-weight: bold;
+  display: block;
+  margin: 8px 0 4px;
 }
 
-/* 入力フィールドの調整 */
+select, input[type="number"] {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.btn, button.calculate-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.add-area-btn {
+  background: var(--success);
+}
+
+.remove-area-btn {
+  background: var(--danger);
+  padding: 6px 10px;
+  min-width: auto;
+}
+
+.area-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.area-input {
+  flex: 1;
+}
+
+.area-total {
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 8px;
+  text-align: right;
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+  white-space: normal;
+}
+
 .price-input {
-    width: 90%;
-    min-width: 70px;
-    max-width: 100px;
-    padding: 4px;
-    box-sizing: border-box;
+  width: 80%;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+th {
+  background: #f2f2f2;
+  position: sticky;
+  top: 0;
+}
+
+.sealing-box .sealing-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.sealing-box .input-group {
+  display: flex;
+  flex-direction: column;
 }
 
 #exportExcelBtn {
-    margin: 20px auto;
-    display: block;
+  display: block;
+  margin: 20px auto;
 }
 
 .error-message {
-    color: var(--danger);
-    margin: 10px 0;
+  color: var(--danger);
+  margin: 10px 0;
+  text-align: center;
 }
     </style>
 </head>
