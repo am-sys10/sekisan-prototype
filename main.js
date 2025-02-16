@@ -4,107 +4,107 @@
 
 // methods.json の内容を直接埋め込み
 const methods = {
-  "sd-kk20t": {
-    "name": "サラセーヌSD-KK20T(フッ素)",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "sd-kk30t": {
-    "name": "サラセーヌSD-KK30T（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
-      "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "サラセーヌクロス＃2000": {
-        "isAreaBased": true,
-        "capacitySqM": 100,
-        "usageFactor": 1
-      }
-    }
-  },
-  "sd-立上り20t": {
-    "name": "サラセーヌSD-立上り20T（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "サラセーヌクロス＃4000": {
-        "isAreaBased": true,
-        "capacitySqM": 50,
-        "usageFactor": 1
-      }
-    }
-  },
-  "sdn-立上り20t": {
-    "name": "サラセーヌSDN-立上り20T（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "sd-ez30tj": {
-    "name": "サラセーヌSD-EZ30TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌEZ": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "サラセーヌクロス＃2000": {
-        "isAreaBased": true,
-        "capacitySqM": 100,
-        "usageFactor": 1
-      }
-    }
-  },
-  "sd-ez20tj": {
-    "name": "サラセーヌSD-EZ20TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌEZ": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "sd-ez立上り20t": {
-    "name": "サラセーヌSD-EZ立上り20T（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "サラセーヌクロス＃4000": {
-        "isAreaBased": true,
-        "capacitySqM": 50,
-        "usageFactor": 1
-      }
-    }
-  },
-  "sdn-ez立上り20t": {
-    "name": "サラセーヌSDN-EZ立上り20T（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "qv-kk50t": {
+    "sd-kk20t": {
+        "name": "サラセーヌSD-KK20T(フッ素)",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-kk30t": {
+        "name": "サラセーヌSD-KK30T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+            "サラセーヌクロス＃2000": {
+                "isAreaBased": true,
+                "capacitySqM": 100,
+                "usageFactor": 1
+            }
+        }
+    },
+    "sd-立上り20t": {
+        "name": "サラセーヌSD-立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+            "サラセーヌクロス＃4000": {
+                "isAreaBased": true,
+                "capacitySqM": 50,
+                "usageFactor": 1
+            }
+        }
+    },
+    "sdn-立上り20t": {
+        "name": "サラセーヌSDN-立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-ez30tj": {
+        "name": "サラセーヌSD-EZ30TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ": { "usagePerSqM": 3.9, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+            "サラセーヌクロス＃2000": {
+                "isAreaBased": true,
+                "capacitySqM": 100,
+                "usageFactor": 1
+            }
+        }
+    },
+    "sd-ez20tj": {
+        "name": "サラセーヌSD-EZ20TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+     "sd-ez立上り20t": {
+        "name": "サラセーヌSD-EZ立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
+            "サラセーヌクロス＃4000": {
+                "isAreaBased": true,
+                "capacitySqM": 50,
+                "usageFactor": 1
+            }
+        }
+     },
+     "sdn-ez立上り20t": {
+        "name": "サラセーヌSDN-EZ立上り20T（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌEZ立上り用": { "usagePerSqM": 2.6, "capacity": 24, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+     },
+    "qv-kk50t": {
     "name": "サラセーヌQV-KK50T(フッ素)",
     "manufacturer": "AGCポリマー建材",
     "materials": {
@@ -112,26 +112,22 @@ const methods = {
       "サラセーヌK": { "usagePerSqM": 3.3, "capacity": 24, "usageFactor": 1 },
       "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
       "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "QVシート": {
-        "isAreaBased": true,
-        "capacitySqM": 15,
-        "usageFactor": 1.06
-      },
-      "ジョイントテープ": {
+      "QVシート":{ "isAreaBased": true,
+                "capacitySqM": 15,
+                "usageFactor": 1.06},
+      "ジョイントテープ":{
         "type": "tape2",
         "rollLength": 50,
         "capacity": 50,
-        "usagePerSqM": 1
-      },
+        "usagePerSqM": 1},
       "MBテープ": {
         "type": "tape1",
         "rollLength": 20,
         "capacity": 20,
-        "usagePerSqM": 1
-      }
-    }
-  },
-  "qv-ez50t": {
+        "usagePerSqM": 1}
+        }
+    },
+    "qv-ez50t": {
     "name": "サラセーヌQV-EZ50T(フッ素)",
     "manufacturer": "AGCポリマー建材",
     "materials": {
@@ -139,67 +135,256 @@ const methods = {
       "サラセーヌEZ": { "usagePerSqM": 3.3, "capacity": 24, "usageFactor": 1 },
       "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
       "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 },
-      "QVシート": {
-        "isAreaBased": true,
-        "capacitySqM": 15,
-        "usageFactor": 1.06
-      },
-      "ジョイントテープ": {
+      "QVシート":{ "isAreaBased": true,
+                "capacitySqM": 15,
+                "usageFactor": 1.06},
+      "ジョイントテープ":{
         "type": "tape2",
         "rollLength": 50,
         "capacity": 50,
-        "usagePerSqM": 1
-      },
+        "usagePerSqM": 1},
       "MBテープ": {
         "type": "tape1",
         "rollLength": 20,
         "capacity": 20,
-        "usagePerSqM": 1
-      }
+        "usagePerSqM": 1}
+        }
+    },
+    "sd-az15tj": {
+        "name": "タフガイSD-AZ15TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-az立上り15tj": {
+        "name": "タフガイSD-AZ立上り15TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-az13tj": {
+        "name": "タフガイNK-AZ13TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+      },
+    "nk-az立上り13tj": {
+        "name": "タフガイNK-AZ立上り13TJ（フッ素）",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "av-a45t": {
+        "name": "タフガイAV-A45T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌAVボンド": { "usagePerSqM": 0.25, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAVシートブルー": { "isAreaBased": true, "capacitySqM": 20, "usageFactor": 1 },
+            "サラセーヌAV-W": { "usagePerSqM": 1.2, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 2.0, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "qv-ak45t": {
+        "name": "タフガイQV-AK45T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "QVシート": { "isAreaBased": true, "capacitySqM": 15.9, "usageFactor": 1.06 },
+            "サラセーヌK": { "usagePerSqM": 1.3, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "qv-a45t": {
+        "name": "タフガイQV-A45T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "QVシート": { "isAreaBased": true, "capacitySqM": 15.9, "usageFactor": 1.06 },
+            "サラセーヌA": { "usagePerSqM": 2.4, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-ak25t": {
+        "name": "タフガイSD-AK25T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 1.7, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.5, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-ak30t": {
+        "name": "タフガイSD-AK30T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 2.0, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-a立上り20t": {
+        "name": "タフガイSD-A立上り20T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌ立上り用": { "usagePerSqM": 1.3, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 1.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-a15t": {
+        "name": "タフガイSD-A15T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "sd-a立上り15t": {
+        "name": "タフガイSD-A立上り15T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-a20t": {
+        "name": "タフガイNK-A20T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 2.4, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 }
+        }
+    },
+    "nk-a立上り20t": {
+        "name": "タフガイNK-A立上り20T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 2.4, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-a16t": {
+        "name": "タフガイNK-A16T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 2.0, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-a立上り16t": {
+        "name": "タフガイNK-A立上り16T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 2.0, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-a13t": {
+        "name": "タフガイNK-A13T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "nk-a立上り13t": {
+        "name": "タフガイNK-A立上り13T",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "P-60プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "av-x-1ak": {
+        "name": "タフガイAV-X-1AK T仕上げ",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌAVボンド": { "usagePerSqM": 0.3, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌAVシート": { "isAreaBased": true, "capacitySqM": 20, "usageFactor": 1 },
+            "サラセーヌAV-W": { "usagePerSqM": 1.4, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 1.4, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.3, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+     "qv-x-1ak": {
+        "name": "タフガイQV-X-1AK T仕上げ",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "QVシート": { "isAreaBased": true, "capacitySqM": 15.9, "usageFactor": 1.06 },
+            "サラセーヌK": { "usagePerSqM": 2.0, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+     },
+     "x-2ak": {
+        "name": "タフガイX-2AK T仕上げ",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌK": { "usagePerSqM": 2.4, "capacity": 24, "usageFactor": 1 },
+            "サラセーヌA": { "usagePerSqM": 1.4, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
+    },
+    "x-2立上りak": {
+        "name": "タフガイX-2立上りA T仕上げ",
+        "manufacturer": "AGCポリマー建材",
+        "materials": {
+            "サラセーヌP": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌ立上り用": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌA立上り用": { "usagePerSqM": 1.0, "capacity": 16, "usageFactor": 1 },
+            "サラセーヌT": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
+            "サラセーヌTフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
+        }
     }
-  },
-  "sd-az15tj": {
-    "name": "タフガイSD-AZ15TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "sd-az立上り15tj": {
-    "name": "タフガイSD-AZ立上り15TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJプライマー": { "usagePerSqM": 0.2, "capacity": 16, "usageFactor": 1 },
-      "サラセーヌAZ": { "usagePerSqM": 1.8, "capacity": 16, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "nk-az13tj": {
-    "name": "タフガイNK-AZ13TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
-      "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  },
-  "nk-az立上り13tj": {
-    "name": "タフガイNK-AZ立上り13TJ（フッ素）",
-    "manufacturer": "AGCポリマー建材",
-    "materials": {
-      "PJ層間プライマー": { "usagePerSqM": 0.1, "capacity": 5, "usageFactor": 1 },
-      "サラセーヌAZ": { "usagePerSqM": 1.6, "capacity": 16, "usageFactor": 1 },
-      "TJトップ": { "usagePerSqM": 0.2, "capacity": 15, "usageFactor": 1 },
-      "TJフッ素": { "usagePerSqM": 0.15, "capacity": 8, "usageFactor": 1 }
-    }
-  }
 };
-
 // sealing_materials.json の内容を直接埋め込み
 const sealingMaterials = {
   "ビルドシールSR": {
