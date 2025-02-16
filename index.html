@@ -166,35 +166,43 @@ label {
 <body>
     <h1>材料計算ツール</h1>
     <div class="container">
-        <!-- 通常工法テンプレート -->
-        <template id="method-box-template">
-            <div class="calculation-box regular-method">
-                <h2>工法{num}</h2>
-                <div>
-                    <label>メーカー:</label>
-                    <select class="manufacturer-select">
-                        <option value="">選択してください</option>
-                    </select>
-                </div>
-                <div>
-                    <label>工法:</label>
-                    <select class="method-select">
-                        <option value="">選択してください</option>
-                    </select>
-                </div>
-                <div class="areas-container">
-                    <label>面積 (平米):</label>
-                    <div class="area-input-group">
-                        <input type="number" class="area-input" placeholder="面積を入力">
-                        <button class="remove-area-btn">削除</button>
-                    </div>
-                    <div class="area-total">合計面積: <span>0</span> m²</div>
-                </div>
-                <button class="add-area-btn">面積を追加</button>
-                <button class="calculate-btn">計算する</button>
-                <div class="result"></div>
-            </div>
-        </template>
+       
+        <!-- 通常工法テンプレート（中分類追加版） -->
+<template id="method-box-template">
+  <div class="calculation-box regular-method">
+    <h2>工法{num}</h2>
+    <div>
+      <label>メーカー:</label>
+      <select class="manufacturer-select">
+        <option value="">選択してください</option>
+      </select>
+    </div>
+    <div>
+      <label>カテゴリ:</label>
+      <select class="category-select">
+        <option value="">選択してください</option>
+      </select>
+    </div>
+    <div>
+      <label>工法:</label>
+      <select class="method-select">
+        <option value="">選択してください</option>
+      </select>
+    </div>
+    <div class="areas-container">
+      <label>面積 (平米):</label>
+      <div class="area-input-group">
+        <input type="number" class="area-input" placeholder="面積を入力">
+        <button class="remove-area-btn">削除</button>
+      </div>
+      <div class="area-total">合計面積: <span>0</span> m²</div>
+    </div>
+    <button class="add-area-btn">面積を追加</button>
+    <button class="calculate-btn">計算する</button>
+    <div class="result"></div>
+  </div>
+</template>
+
 
         <!-- シーリング工法テンプレート -->
         <template id="sealing-box-template">
