@@ -584,8 +584,12 @@ function setupRegularMethodBox(box, num) {
 }
 
 function setupSealingBox(box, num) {
+    const manufacturerSelect = box.querySelector('.manufacturer-select');
+    const materialSelect = box.querySelector('.material-select');
+    const calculateBtn = box.querySelector('.calculate-btn');
     const typeSpecificDiv = box.querySelector('.type-specific');
 
+    // タイプごとの入力フィールドの変更
     if (num === '1') {
         // 通常のシーリング工法（長さを入力）
         typeSpecificDiv.innerHTML = `
@@ -595,7 +599,7 @@ function setupSealingBox(box, num) {
             </div>
         `;
     } else {
-        // シーリング工法（ガラリ用）→ 直径 & 箇所数
+        // ガラリ用のシーリング工法（直径と箇所数）
         typeSpecificDiv.innerHTML = `
             <div class="input-group">
                 <label>直径 (mm):</label>
@@ -607,19 +611,17 @@ function setupSealingBox(box, num) {
             </div>
         `;
     }
-}
 
+    // メーカーリストの設定
+    const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
+    populateSelect(manufacturerSelect, manufacturers);
 
-  // メーカーリストの設定
-  const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
-  populateSelect(manufacturerSelect, manufacturers);
-
-  // イベントリスナーの設定
-  manufacturerSelect.addEventListener('change', () => 
-    updateSealingMaterialList(manufacturerSelect, materialSelect));
-  
-  calculateBtn.addEventListener('click', () => 
-    calculateSealing(box, num));
+    // イベントリスナーの設定
+    manufacturerSelect.addEventListener('change', () => 
+        updateSealingMaterialList(manufacturerSelect, materialSelect));
+    
+    calculateBtn.addEventListener('click', () => 
+        calculateSealing(box, num));
 }
 
 // セレクトボックスの選択肢を設定
