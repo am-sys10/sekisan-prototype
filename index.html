@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>材料計算ツール</title>
-    <style>
+     <style>
        :root {
     --primary: #007bff;
     --success: #28a745;
@@ -166,7 +166,6 @@ label {
 <body>
     <h1>材料計算ツール</h1>
     <div class="container">
-       
         <!-- 通常工法テンプレート（中分類追加版） -->
 <template id="method-box-template">
   <div class="calculation-box regular-method">
@@ -203,11 +202,10 @@ label {
   </div>
 </template>
 
-
-        <!-- シーリング工法テンプレート -->
+        <!-- シーリング工法（通常）テンプレート -->
         <template id="sealing-box-template">
             <div class="calculation-box sealing-box">
-                <h2 class="sealing title">シーリング工法</h2>
+                <h2 class="sealing-title">シーリング工法</h2>
                 <div>
                     <label>メーカー:</label>
                     <select class="manufacturer-select">
@@ -230,7 +228,51 @@ label {
                         <input type="number" class="depth-input" min="0">
                     </div>
                     <div class="input-group type-specific">
-                        <!-- type-1 or type-2 specific inputs will be added here -->
+                        <label>長さ (m):</label>
+                        <input type="number" class="length-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>1/2で計算:</label>
+                        <input type="checkbox" class="half-calc">
+                    </div>
+                </div>
+                <button class="calculate-btn">計算する</button>
+                <div class="result"></div>
+            </div>
+        </template>
+
+        <!-- シーリング工法（ガラリ用）テンプレート -->
+        <template id="sealing-box-garari-template">
+            <div class="calculation-box sealing-box">
+                <h2 class="sealing-title">シーリング工法（ガラリ用）</h2>
+                <div>
+                    <label>メーカー:</label>
+                    <select class="manufacturer-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div>
+                    <label>材料:</label>
+                    <select class="material-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="sealing-inputs">
+                    <div class="input-group">
+                        <label>巾 (mm):</label>
+                        <input type="number" class="width-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>深さ (mm):</label>
+                        <input type="number" class="depth-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>直径 (mm):</label>
+                        <input type="number" class="diameter-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>箇所数:</label>
+                        <input type="number" class="count-input" min="0">
                     </div>
                     <div class="input-group">
                         <label>1/2で計算:</label>
@@ -242,7 +284,9 @@ label {
             </div>
         </template>
     </div>
+    <div class="container">
     <button id="exportExcelBtn" class="calculate-btn">見積もりをエクスポート</button>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="main.js"></script>
