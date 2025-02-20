@@ -583,11 +583,32 @@ function setupRegularMethodBox(box, num) {
   updateAreaTotal(box);
 }
 
-// シーリング工法ボックスのセットアップ
 function setupSealingBox(box, num) {
-  const manufacturerSelect = box.querySelector('.manufacturer-select');
-  const materialSelect = box.querySelector('.material-select');
-  const calculateBtn = box.querySelector('.calculate-btn');
+    const typeSpecificDiv = box.querySelector('.type-specific');
+
+    if (num === '1') {
+        // 通常のシーリング工法（長さを入力）
+        typeSpecificDiv.innerHTML = `
+            <div class="input-group">
+                <label>長さ (m):</label>
+                <input type="number" class="length-input" min="0">
+            </div>
+        `;
+    } else {
+        // シーリング工法（ガラリ用）→ 直径 & 箇所数
+        typeSpecificDiv.innerHTML = `
+            <div class="input-group">
+                <label>直径 (mm):</label>
+                <input type="number" class="diameter-input" min="0">
+            </div>
+            <div class="input-group">
+                <label>箇所数:</label>
+                <input type="number" class="count-input" min="0">
+            </div>
+        `;
+    }
+}
+
 
   // メーカーリストの設定
   const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
