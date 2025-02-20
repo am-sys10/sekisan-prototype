@@ -196,124 +196,7 @@ label {
             </div>
         </template>
 
-        <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>材料計算ツール</title>
-    <style>
-       :root {
-    --primary: #007bff;
-    --success: #28a745;
-    --danger: #dc3545;
-    --border: #ddd;
-    --shadow: rgba(0, 0, 0, 0.1);
-}
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f9f9f9;
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.calculation-box {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 2px 5px var(--shadow);
-}
-
-.btn {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-}
-
-.add-area-btn { background: var(--success); }
-.remove-area-btn { background: var(--danger); }
-.calculate-btn { 
-    background: var(--primary);
-    padding: 8px 12px;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.area-input-group {
-    display: flex;
-    gap: 10px;
-    margin: 5px 0;
-}
-
-.area-input { width: 100px; }
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 15px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid var(--border);
-    text-align: right;
-    white-space: nowrap;
-}
-
-th:first-child,
-td:first-child {
-    text-align: left;
-    white-space: normal;
-    min-width: 120px;
-}
-
-.price-input {
-    width: 90%;
-    min-width: 70px;
-    max-width: 100px;
-    padding: 4px;
-    box-sizing: border-box;
-}
-
-th {
-    background: #f2f2f2;
-    position: sticky;
-    top: 0;
-}
-
-#exportExcelBtn {
-    margin: 20px auto;
-    display: block;
-}
-
-.error-message {
-    color: var(--danger);
-    margin: 10px 0;
-}
-    </style>
-</head>
-<body>
-    <h1>材料計算ツール</h1>
-    <div class="container">
+        <!-- シーリング工法（通常）テンプレート -->
         <template id="sealing-box-template">
             <div class="calculation-box sealing-box">
                 <h2 class="sealing-title">シーリング工法</h2>
@@ -339,7 +222,8 @@ th {
                         <input type="number" class="depth-input" min="0">
                     </div>
                     <div class="input-group type-specific">
-                        <!-- ここで通常工法とガラリ用で異なるフィールドを動的に変更 -->
+                        <label>長さ (m):</label>
+                        <input type="number" class="length-input" min="0">
                     </div>
                     <div class="input-group">
                         <label>1/2で計算:</label>
@@ -351,7 +235,48 @@ th {
             </div>
         </template>
 
-    </div>
+        <!-- シーリング工法（ガラリ用）テンプレート -->
+        <template id="sealing-box-garari-template">
+            <div class="calculation-box sealing-box">
+                <h2 class="sealing-title">シーリング工法（ガラリ用）</h2>
+                <div>
+                    <label>メーカー:</label>
+                    <select class="manufacturer-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div>
+                    <label>材料:</label>
+                    <select class="material-select">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+                <div class="sealing-inputs">
+                    <div class="input-group">
+                        <label>巾 (mm):</label>
+                        <input type="number" class="width-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>深さ (mm):</label>
+                        <input type="number" class="depth-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>直径 (mm):</label>
+                        <input type="number" class="diameter-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>箇所数:</label>
+                        <input type="number" class="count-input" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>1/2で計算:</label>
+                        <input type="checkbox" class="half-calc">
+                    </div>
+                </div>
+                <button class="calculate-btn">計算する</button>
+                <div class="result"></div>
+            </div>
+        </template>
     <button id="exportExcelBtn" class="calculate-btn">見積もりをエクスポート</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
