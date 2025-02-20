@@ -358,13 +358,44 @@ function setupRegularMethodBox(box, num) {
 
 // シーリング工法ボックスのセットアップ
 function setupSealingBox(box, num) {
-  const manufacturerSelect = box.querySelector('.manufacturer-select');
-  const materialSelect = box.querySelector('.material-select');
-  const calculateBtn = box.querySelector('.calculate-btn');
-  const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
-  populateSelect(manufacturerSelect, manufacturers);
-  manufacturerSelect.addEventListener('change', () => updateSealingMaterialList(manufacturerSelect, materialSelect));
-  calculateBtn.addEventListener('click', () => calculateSealing(box, num));
+    const manufacturerSelect = box.querySelector('.manufacturer-select');
+    const materialSelect = box.querySelector('.material-select');
+    const calculateBtn = box.querySelector('.calculate-btn');
+    const typeSpecificDiv = box.querySelector('.type-specific');
+
+    // タイプごとの入力フィールドの変更
+    if (num === '1') {
+        // 通常のシーリング工法（長さを入力）
+        typeSpecificDiv.innerHTML = `
+            <div class="input-group">
+                <label>長さ (m):</label>
+                <input type="number" class="length-input" min="0">
+            </div>
+        `;
+    } else {
+        // ガラリ用のシーリング工法（直径と箇所数）
+        typeSpecificDiv.innerHTML = `
+            <div class="input-group">
+                <label>直径 (mm):</label>
+                <input type="number" class="diameter-input" min="0">
+            </div>
+            <div class="input-group">
+                <label>箇所数:</label>
+                <input type="number" class="count-input" min="0">
+            </div>
+        `;
+    }
+
+    // メーカーリストの設定
+    const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
+    populateSelect(manufacturerSelect, manufacturers);
+
+    // イベントリスナーの設定
+    manufacturerSelect.addEventListener('change', () => 
+        updateSealingMaterialList(manufacturerSelect, materialSelect));
+    
+    calculateBtn.addEventListener('click', () => 
+        calculateSealing(box, num));
 }
 
 function populateSelect(select, items) {
