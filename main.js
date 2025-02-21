@@ -248,6 +248,9 @@ const sealingMaterials = {
   }
 };
 
+// グローバル変数：すべての見積もりデータを保持
+const globalEstimateData = [];
+
 // =========================
 // アプリケーション初期化（fetchは使わず、直接JSONを利用）
 // =========================
@@ -258,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
 /* =========================
    カテゴリ更新関連の関数
    ========================= */
-// メーカー選択後にカテゴリ選択肢を設定
 function updateCategoryList(manufacturerSelect, categorySelect) {
   const selectedManufacturer = manufacturerSelect.value;
   const categories = new Set();
@@ -276,7 +278,6 @@ function updateCategoryList(manufacturerSelect, categorySelect) {
   });
 }
 
-// カテゴリ選択後に工法選択肢を更新
 function updateMethodListByCategory(manufacturerSelect, categorySelect, methodSelect) {
   const selectedManufacturer = manufacturerSelect.value;
   const selectedCategory = categorySelect.value;
@@ -292,9 +293,10 @@ function updateMethodListByCategory(manufacturerSelect, categorySelect, methodSe
     }
   });
 }
-// =========================
-// 従来の関数群（計算、表示、エクスポート等）
-// =========================
+
+/* =========================
+   従来の関数群（計算、表示、エクスポート等）
+   ========================= */
 
 // 通常工法ボックスの初期化
 function initAllCalculations() {
@@ -354,47 +356,74 @@ function setupRegularMethodBox(box, num) {
     }
   });
   updateAreaTotal(box);
+
+  // 「見積もりに追加」ボタンの追加
+  const addToEstimateBtn = document.createElement('button');
+  addToEstimateBtn.textContent = '見積もりに追加';
+  addToEstimateBtn.className = 'add-to-estimate-btn';
+  box.appendChild(addToEstimateBtn);
+  addToEstimateBtn.addEventListener('click', () => {
+    const estimateData = extractEstimateDataFromBox(box);
+    if (estimateData) {
+      globalEstimateData.push(estimateData);
+      alert('見積もりに追加しました！');
+    }
+  });
 }
 
+// シーリング工法ボックスのセットアップ
 function setupSealingBox(box, num) {
-    const manufacturerSelect = box.querySelector('.manufacturer-select');
-    const materialSelect = box.querySelector('.material-select');
-    const calculateBtn = box.querySelector('.calculate-btn');
-    const typeSpecificDiv = box.querySelector('.type-specific');
+  const manufacturerSelect = box.querySelector('.manufacturer-select');
+  const materialSelect = box.querySelector('.material-select');
+  const calculateBtn = box.querySelector('.calculate-btn');
+  const typeSpecificDiv = box.querySelector('.type-specific');
 
-    // タイプごとの入力フィールドの変更
-    if (num === '1') {
-        // 通常のシーリング工法（長さを入力）
-        typeSpecificDiv.innerHTML = `
-            <div class="input-group">
-                <label>長さ (m):</label>
-                <input type="number" class="length-input" min="0">
-            </div>
-        `;
-    } else {
-        // ガラリ用のシーリング工法（直径と箇所数）
-        typeSpecificDiv.innerHTML = `
-            <div class="input-group">
-                <label>直径 (mm):</label>
-                <input type="number" class="diameter-input" min="0">
-            </div>
-            <div class="input-group">
-                <label>箇所数:</label>
-                <input type="number" class="count-input" min="0">
-            </div>
-        `;
+  // タイプごとの入力フィールドの変更
+  if (num === '1') {
+    // 通常のシーリング工法（長さを入力）
+    typeSpecificDiv.innerHTML = `
+      <div class="input-group">
+        <label>長さ (m):</label>
+        <input type="number" class="length-input" min="0">
+      </div>
+    `;
+  } else {
+    // ガラリ用のシーリング工法（直径と箇所数）
+    typeSpecificDiv.innerHTML = `
+      <div class="input-group">
+        <label>直径 (mm):</label>
+        <input type="number" class="diameter-input" min="0">
+      </div>
+      <div class="input-group">
+        <label>箇所数:</label>
+        <input type="number" class="count-input" min="0">
+      </div>
+    `;
+  }
+
+  // メーカーリストの設定
+  const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
+  populateSelect(manufacturerSelect, manufacturers);
+
+  // イベントリスナーの設定
+  manufacturerSelect.addEventListener('change', () => 
+    updateSealingMaterialList(manufacturerSelect, materialSelect));
+  
+  calculateBtn.addEventListener('click', () => 
+    calculateSealing(box, num));
+
+  // 「見積もりに追加」ボタンの追加
+  const addToEstimateBtn = document.createElement('button');
+  addToEstimateBtn.textContent = '見積もりに追加';
+  addToEstimateBtn.className = 'add-to-estimate-btn';
+  box.appendChild(addToEstimateBtn);
+  addToEstimateBtn.addEventListener('click', () => {
+    const estimateData = extractEstimateDataFromBox(box);
+    if (estimateData) {
+      globalEstimateData.push(estimateData);
+      alert('見積もりに追加しました！');
     }
-
-    // メーカーリストの設定
-    const manufacturers = [...new Set(Object.values(sealingMaterials).map(material => material.manufacturer))];
-    populateSelect(manufacturerSelect, manufacturers);
-
-    // イベントリスナーの設定
-    manufacturerSelect.addEventListener('change', () => 
-        updateSealingMaterialList(manufacturerSelect, materialSelect));
-    
-    calculateBtn.addEventListener('click', () => 
-        calculateSealing(box, num));
+  });
 }
 
 function populateSelect(select, items) {
@@ -656,17 +685,76 @@ function updateTotalCost(table) {
   totalCell.textContent = total.toLocaleString() + ' 円';
 }
 
-function setupExcelExport() {
-  document.getElementById('exportExcelBtn').addEventListener('click', () => {
-    const workbook = XLSX.utils.book_new();
-    document.querySelectorAll('.calculation-box').forEach((box) => {
-      const table = box.querySelector('table');
-      if (table) {
-        const ws = XLSX.utils.table_to_sheet(table);
-        const sheetName = box.querySelector('h2').textContent;
-        XLSX.utils.book_append_sheet(workbook, ws, sheetName);
-      }
+// =========================
+// 「見積もりに追加」したデータを抽出する関数
+// =========================
+function extractEstimateDataFromBox(box) {
+  const methodName = box.querySelector('h2').textContent;
+  const table = box.querySelector('table');
+  if (!table) {
+    alert('計算結果がありません。先に計算してください。');
+    return null;
+  }
+  const data = [];
+  table.querySelectorAll('tbody tr').forEach(row => {
+    const cells = row.querySelectorAll('td');
+    // 価格欄はinputがあればその値を取得
+    const price = cells[6].querySelector('input') ? cells[6].querySelector('input').value : cells[6].textContent;
+    data.push({
+      材料名: cells[0].textContent.trim(),
+      必要使用量: cells[1].textContent.trim(),
+      積算: cells[2].textContent.trim(),
+      必要量: cells[3].textContent.trim(),
+      積算数量: cells[4].textContent.trim(),
+      搬入数量: cells[5].textContent.trim(),
+      単価: price,
+      金額: cells[7].textContent.trim()
     });
-    XLSX.writeFile(workbook, '見積もり.xlsx');
   });
+  return {
+    工法名: methodName,
+    材料データ: data
+  };
+}
+
+// =========================
+// まとめて1枚のExcelシートにエクスポートする関数
+// =========================
+function exportCombinedExcel() {
+  const data = [];
+  // ヘッダー行
+  data.push(['工法名', '材料名', '必要使用量', '積算', '必要量', '積算数量', '搬入数量', '単価', '金額']);
+
+  globalEstimateData.forEach(result => {
+    // セクション見出しとして工法名を追加
+    data.push([result.工法名]);
+    result.材料データ.forEach(item => {
+      data.push([
+        '', // 工法名はセクション見出しに記載済み
+        item.材料名,
+        item.必要使用量,
+        item.積算,
+        item.必要量,
+        item.積算数量,
+        item.搬入数量,
+        item.単価,
+        item.金額
+      ]);
+    });
+    // セクション区切りの空行
+    data.push([]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'まとめ見積もり');
+  XLSX.writeFile(wb, 'まとめ見積もり.xlsx');
+}
+
+// =========================
+// エクスポートボタンのセットアップ
+// =========================
+function setupExcelExport() {
+  // 既存の exportExcelBtn を、新規作成した exportCombinedExcel 関数に紐付ける
+  document.getElementById('exportExcelBtn').addEventListener('click', exportCombinedExcel);
 }
